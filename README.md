@@ -49,13 +49,13 @@ Paste any text, click **YOINK!**, and see IOCs categorized instantly.
 
 | Dark mode | Light mode |
 |-----------|------------|
-| ![Dark mode extraction](screenshots/extract-dark.png) | ![Light mode extraction](screenshots/extract-light.png) |
+| ![Dark mode extraction](screenshots/yoink.png) | ![Light mode extraction](screenshots/yoink_L.png) |
 
 ### Source viewer panel
 
 Click any indicator to open the source viewer. Every occurrence is highlighted. Click again to cycle through matches.
 
-![Source viewer panel](screenshots/source-viewer.png)
+![Source viewer panel](screenshots/yoink_source.png)
 
 ### STIX 2.1 export
 
@@ -67,7 +67,7 @@ Configure metadata, TLP marking, confidence, and define relationships between IO
 
 Each indicator comes with copy, edit, and delete actions. Domain and file indicators support long-press to reclassify.
 
-![IOC actions](screenshots/ioc-actions.png)
+![IOC actions](screenshots/yoink_actions.png)
 
 ---
 
@@ -200,7 +200,7 @@ Dark and light themes with a toggle in the top-right corner. Your preference is 
 
 | Dark | Light |
 |------|-------|
-| ![Dark theme](screenshots/theme-dark.png) | ![Light theme](screenshots/theme-light.png) |
+| ![Dark theme](screenshots/yoink.png) | ![Light theme](screenshots/yoink_l.png) |
 
 ---
 
@@ -247,24 +247,3 @@ Some ideas for contributions:
 ## License
 
 MIT License. Use it, fork it, ship it.
-
----
-
-## Adding screenshots
-
-To complete this README with actual screenshots:
-
-1. Open `yoink.html` in your browser
-2. Capture the following and save to the `screenshots/` folder:
-
-| File name | What to capture |
-|-----------|----------------|
-| `extract-dark.png` | Full window after extracting IOCs (dark mode) |
-| `extract-light.png` | Same view in light mode |
-| `source-viewer.png` | Source panel open with an indicator highlighted |
-| `stix-export.png` | STIX 2.1 modal with metadata filled in |
-| `ioc-actions.png` | Close-up of IOC list showing copy/edit/delete buttons |
-| `theme-dark.png` | Full tool in dark mode |
-| `theme-light.png` | Full tool in light mode |
-
-> **Tip:** Use a browser window at 1280px wide for consistent screenshots. Remove this section from the README before publishing.
