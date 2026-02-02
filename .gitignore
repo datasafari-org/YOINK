@@ -32,3 +32,6 @@ Temporary Items
 # Backup files
 *.bak
 *~
+
+# AI assistant context (local only)
+CLAUDE.MD
