@@ -49,7 +49,7 @@ Paste any text, click **YOINK!**, and see IOCs categorized instantly.
 
 | Dark mode | Light mode |
 |-----------|------------|
-| ![Dark mode extraction](screenshots/yoink.png) | ![Light mode extraction](screenshots/yoink_L.png) |
+| ![Dark mode extraction](screenshots/yoink.png) | ![Light mode extraction](screenshots/yoink_l.png) |
 
 ### Source viewer panel
 
@@ -61,7 +61,7 @@ Click any indicator to open the source viewer. Every occurrence is highlighted. 
 
 Configure metadata, TLP marking, confidence, and define relationships between IOCs. Generates a complete STIX 2.1 bundle ready for your TIP.
 
-![STIX export modal](screenshots/stix-export.png)
+![STIX export modal](screenshots/yoink_stix.png)
 
 ### IOC actions
 
