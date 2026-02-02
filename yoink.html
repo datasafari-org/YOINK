@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>YOINK! — Your Observables Instantly Nabbed & Kategorized</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%234da6ff'/%3E%3Cstop offset='100%25' stop-color='%233385cc'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M16 2L4 7v8c0 7.7 5.1 14.9 12 17 6.9-2.1 12-9.3 12-17V7L16 2z' fill='%231e1e1e' stroke='url(%23g)' stroke-width='1.5'/%3E%3Ccircle cx='14' cy='14' r='6' fill='none' stroke='%234da6ff' stroke-width='2'/%3E%3Cline x1='18.5' y1='18.5' x2='24' y2='24' stroke='%234da6ff' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='14' y='17' text-anchor='middle' font-size='7' font-weight='bold' fill='%234da6ff' font-family='Arial'%3EY!%3C/text%3E%3C/svg%3E">
+    <style>
+        /* ─── Theme variables ─────────────────────────────────────────────── */
+        :root {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #2e2e2e;
+            --bg-tertiary: #333;
+            --bg-hover: rgba(77, 166, 255, 0.15);
+            --text-primary: #f0f0f0;
+            --text-secondary: #aaa;
+            --text-muted: #888;
+            --text-disabled: #666;
+            --accent: #4da6ff;
+            --accent-hover: #3385cc;
+            --accent-subtle: rgba(77, 166, 255, 0.1);
+            --accent-flash: rgba(77, 166, 255, 0.3);
+            --border: #444;
+            --border-light: #555;
+            --highlight-active: #2a6bbf;
+            --highlight-focus: #4da6ff;
+            --highlight-focus-text: #000;
+            --highlight-outline: #fff;
+            --mark-border: #666;
+            --refang-text: #aad4ff;
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --modal-backdrop: rgba(0, 0, 0, 0.7);
+            --table-even: #2a2a2a;
+            --btn-primary-text: #000;
+            --icon-color: #c0c0c0;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f6f8;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e8eaed;
+            --bg-hover: rgba(26, 115, 200, 0.08);
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --text-muted: #777;
+            --text-disabled: #999;
+            --accent: #1a73e8;
+            --accent-hover: #1558b0;
+            --accent-subtle: rgba(26, 115, 232, 0.08);
+            --accent-flash: rgba(26, 115, 232, 0.2);
+            --border: #d0d4da;
+            --border-light: #c0c4ca;
+            --highlight-active: #c8ddf5;
+            --highlight-focus: #1a73e8;
+            --highlight-focus-text: #fff;
+            --highlight-outline: #1a73e8;
+            --mark-border: #b0b4ba;
+            --refang-text: #1558b0;
+            --danger: #d93025;
+            --danger-bg: rgba(217, 48, 37, 0.08);
+            --modal-backdrop: rgba(0, 0, 0, 0.4);
+            --table-even: #f0f2f5;
+            --btn-primary-text: #fff;
+            --icon-color: #444;
+        }
+
+        /* ─── Base ────────────────────────────────────────────────────────── */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        button {
+            background-color: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--bg-hover);
+        }
+
+        button.btn-primary {
+            background-color: var(--accent);
+            color: var(--btn-primary-text);
+            border: none;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button.btn-unyoink {
+            background-color: var(--bg-secondary);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        button.btn-unyoink:hover {
+            background-color: var(--accent-subtle);
+        }
+
+        .output {
+            margin-top: 20px;
+            background-color: var(--bg-secondary);
+            padding: 10px;
+            border: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .output h3 {
+            color: var(--accent);
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ─── Top bar ─────────────────────────────────────────────────────── */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .top-bar h1 {
+            flex: 1;
+            margin: 0;
+        }
+
+        .top-bar-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .lang-toggle {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 2px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            margin: 0;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--text-primary);
+            line-height: 1;
+            opacity: 0.5;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+
+        .lang-btn.active {
+            opacity: 1;
+            background-color: var(--bg-tertiary);
+        }
+
+        .lang-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* ─── Theme toggle (sun/moon pill) ────────────────────────────────── */
+        .theme-toggle {
+            width: 52px;
+            height: 28px;
+            border-radius: 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            position: relative;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .theme-toggle-track {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px;
+            box-sizing: border-box;
+        }
+
+        .theme-toggle-icon {
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .theme-toggle-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .theme-toggle-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+        }
+
+        [data-theme="light"] .theme-toggle-thumb {
+            transform: translateX(24px);
+        }
+
+        .help-btn-small {
+            background: none;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .help-btn-small:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        /* ─── Source display ──────────────────────────────────────────────── */
+        #sourceDisplay {
+            width: 100%;
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            line-height: 1.5;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        #sourceDisplay mark {
+            background-color: transparent;
+            color: var(--text-primary);
+            border-bottom: 1px dashed var(--mark-border);
+            cursor: pointer;
+            padding: 0 1px;
+            border-radius: 2px;
+        }
+
+        #sourceDisplay mark.highlight-active {
+            background-color: var(--highlight-active);
+            color: var(--text-primary);
+            border-bottom: none;
+            border-radius: 3px;
+            padding: 1px 2px;
+        }
+
+        #sourceDisplay mark.highlight-focus {
+            background-color: var(--highlight-focus);
+            color: var(--highlight-focus-text);
+            font-weight: bold;
+            outline: 2px solid var(--highlight-outline);
+            outline-offset: 1px;
+        }
+
+        .source-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+
+        /* ─── Refang log ──────────────────────────────────────────────────── */
+        #refangLog {
+            border-left: 3px solid var(--accent);
+            margin-top: 10px;
+            background-color: var(--bg-secondary);
+            padding: 10px;
+            border-right: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #refangLog h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        #refangLog pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            color: var(--refang-text);
+        }
+
+        /* ─── IOC checkboxes ──────────────────────────────────────────────── */
+        .ioc-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 0;
+        }
+
+        .ioc-item input[type="checkbox"] {
+            margin-right: 8px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .ioc-item label {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            cursor: pointer;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ioc-item .ioc-count {
+            color: var(--accent);
+            font-size: 12px;
+            margin-left: 6px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header label {
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .section-header label input {
+            margin-right: 4px;
+            cursor: pointer;
+        }
+
+        .select-all-bar {
+            margin: 10px 0;
+            padding: 8px 10px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .select-all-bar label {
+            cursor: pointer;
+        }
+
+        .select-all-bar input {
+            margin-right: 6px;
+            cursor: pointer;
+        }
+
+        .no-results {
+            color: var(--text-disabled);
+            font-style: italic;
+            padding: 4px 0;
+        }
+
+        /* ─── IOC action buttons ──────────────────────────────────────────── */
+        .ioc-actions {
+            display: flex;
+            gap: 4px;
+            margin-right: 8px;
+            flex-shrink: 0;
+            order: -1;
+        }
+
+        .ioc-actions button {
+            background: none;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 2px 6px;
+            margin: 0;
+            font-size: 13px;
+            border-radius: 3px;
+            line-height: 1;
+        }
+
+        .ioc-actions button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .ioc-actions button.delete-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        /* ─── Long-press move buttons ───────────────────────────────────────── */
+        .ioc-longpress-actions {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 6px;
+            vertical-align: baseline;
+            animation: lp-fade-in 0.15s ease;
+        }
+        @keyframes lp-fade-in {
+            from { opacity: 0; transform: translateX(-4px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .ioc-longpress-actions button {
+            background: var(--accent-subtle);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            cursor: pointer;
+            padding: 1px 8px;
+            font-size: 12px;
+            font-family: inherit;
+            border-radius: 3px;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+        .ioc-longpress-actions button:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* ─── Inline edit input ───────────────────────────────────────────── */
+        .ioc-item .ioc-edit-input {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--accent);
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 14px;
+            flex: 1;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        /* ─── Flash animation ─────────────────────────────────────────────── */
+        @keyframes ioc-flash {
+            0% { background-color: var(--accent-flash); }
+            100% { background-color: transparent; }
+        }
+
+        .ioc-item label.flash {
+            animation: ioc-flash 0.5s ease-out;
+        }
+
+        /* ─── Modals ──────────────────────────────────────────────────────── */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-backdrop);
+            z-index: 999;
+        }
+
+        .modal-content {
+            position: fixed;
+            top: 3%;
+            left: 5%;
+            width: 90%;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 20px;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            z-index: 1000;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .modal-content h2 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .modal-content h3 {
+            color: var(--accent);
+        }
+
+        .modal-content fieldset {
+            border: 1px solid var(--border-light);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .modal-content legend {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .modal-content label {
+            display: block;
+            margin: 5px 0;
+        }
+
+        .modal-content input[type="text"],
+        .modal-content textarea,
+        .modal-content select {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            padding: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 3px;
+        }
+
+        .modal-content input[type="number"] {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            padding: 6px;
+            width: 100px;
+            border-radius: 3px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+            background: none;
+        }
+
+        .rel-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 5px 0;
+            flex-wrap: wrap;
+        }
+
+        .rel-row select {
+            width: auto;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .rel-row button {
+            padding: 4px 10px;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .stix-ioc-summary {
+            font-family: monospace;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .stix-ioc-summary div {
+            padding: 2px 0;
+        }
+
+        .stix-ioc-type {
+            color: var(--accent);
+        }
+
+        /* ─── Help modal docs ─────────────────────────────────────────────── */
+        .doc-section {
+            margin: 15px 0;
+        }
+
+        .doc-section p {
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .doc-table th,
+        .doc-table td {
+            border: 1px solid var(--border-light);
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        .doc-table th {
+            background-color: var(--bg-tertiary);
+            color: var(--accent);
+        }
+
+        .doc-table td {
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .doc-table tr:nth-child(even) td {
+            background-color: var(--table-even);
+        }
+
+        /* ─── Minimalist section icons ────────────────────────────────────── */
+        .section-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .section-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ─── IOC action SVG icons ───────────────────────────────────────── */
+        .ioc-actions button svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            vertical-align: middle;
+            display: block;
+        }
+
+        /* ─── Source panel (slide-in from right) ─────────────────────────── */
+        .source-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--bg-secondary);
+            border-left: 2px solid var(--accent);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .source-panel.open {
+            transform: translateX(0);
+        }
+
+        .source-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .source-panel-header span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .source-panel-close {
+            background: none;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .source-panel-close:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .source-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .source-panel-body mark {
+            background-color: transparent;
+            color: var(--text-primary);
+            border-bottom: 1px dashed var(--mark-border);
+            cursor: pointer;
+            padding: 0 1px;
+            border-radius: 2px;
+        }
+
+        .source-panel-body mark.highlight-active {
+            background-color: var(--highlight-active);
+            color: var(--text-primary);
+            border-bottom: none;
+            border-radius: 3px;
+            padding: 1px 2px;
+        }
+
+        .source-panel-body mark.highlight-focus {
+            background-color: var(--highlight-focus);
+            color: var(--highlight-focus-text);
+            font-weight: bold;
+            outline: 2px solid var(--highlight-outline);
+            outline-offset: 1px;
+        }
+
+        .source-panel-resize {
+            position: absolute;
+            left: -4px;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            cursor: col-resize;
+            z-index: 101;
+        }
+
+        .source-panel-resize:hover {
+            background: var(--accent-subtle);
+        }
+
+        /* Highlighted IOC item in the list */
+        .ioc-item.ioc-selected label {
+            color: var(--accent);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top bar: title + controls -->
+    <div class="top-bar">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+            <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v0.7-beta</sup></h1>
+            <span data-i18n="subtitle" style="font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;margin-top:-2px;">Your Observables Instantly Nabbed &amp; Kategorized</span>
+        </div>
+        <div class="top-bar-controls">
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLanguage('nl')" id="langNL">&#x1F1F3;&#x1F1F1;</button>
+                <button class="lang-btn" onclick="setLanguage('en')" id="langEN">&#x1F1EC;&#x1F1E7;</button>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode" id="themeToggle">
+                <div class="theme-toggle-track">
+                    <span class="theme-toggle-icon">
+                        <svg viewBox="0 0 16 16"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3 4.5 4.5 0 0 0 13 9.5z" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="theme-toggle-icon">
+                        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </span>
+                    <div class="theme-toggle-thumb"></div>
+                </div>
+            </button>
+            <button class="help-btn-small" onclick="openHelpModal()" title="Documentation">?</button>
+        </div>
+    </div>
+
+    <textarea id="inputText" data-i18n-placeholder="placeholder" placeholder="Plak hier je tekst..."></textarea>
+    <div id="sourceDisplay" style="display:none;"></div>
+    <div class="source-bar" id="sourceBar" style="display:none;">
+        <span id="sourceInfo" style="color:var(--text-muted); font-size:12px;"></span>
+    </div>
+
+    <div style="display:flex; align-items:center; flex-wrap:wrap; margin-top:10px;">
+        <button id="extractBtn" class="btn-primary" data-i18n="extractBtn">YOINK!</button>
+        <span id="postYoinkControls" style="display:none;">
+            <button id="csvBtn" data-i18n="csvBtn">Download CSV</button>
+            <button id="jsonBtn" data-i18n="jsonBtn">Download JSON</button>
+            <button id="stixBtn" data-i18n="stixBtn">Download STIX 2.1</button>
+            <label style="margin-left:10px;"><input type="checkbox" id="defangToggle"> <span data-i18n="defangLabel">Defang
+                    resultaten</span></label>
+        </span>
+    </div>
+
+    <div id="refangLog" style="display:none;">
+        <h3 data-i18n="refangHeader">Refang bewerkingen:</h3>
+        <pre id="refangOutput"></pre>
+    </div>
+
+    <div class="select-all-bar" id="selectAllBar" style="display:none;">
+        <label><input type="checkbox" id="selectAll" checked onchange="toggleAllGlobal(this.checked)"> <span
+                data-i18n="selectAll">Selecteer / Deselecteer alle IOCs</span></label>
+    </div>
+
+    <div class="output" id="outputContainer">
+        <div class="ioc-section" id="section_ips" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M2 9h14M9 2c-2.5 2.5-2.5 11.5 0 14M9 2c2.5 2.5 2.5 11.5 0 14"/></svg></span><span data-i18n="sectionIPs">IP-adressen:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="ips" checked
+                        onchange="toggleSection('ips', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="ips"></div>
+        </div>
+
+        <div class="ioc-section" id="section_urls" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M7.5 10.5a3.5 3.5 0 0 0 5 0l2-2a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M10.5 7.5a3.5 3.5 0 0 0-5 0l-2 2a3.5 3.5 0 0 0 5 5l1-1"/></svg></span><span data-i18n="sectionURLs">URLs:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="urls" checked
+                        onchange="toggleSection('urls', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="urls"></div>
+        </div>
+
+        <div class="ioc-section" id="section_domains" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M2 7h14"/><circle cx="4.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/><circle cx="6.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/><circle cx="8.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/></svg></span><span data-i18n="sectionDomains">Domeinen:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="domains" checked
+                        onchange="toggleSection('domains', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="domains"></div>
+        </div>
+
+        <div class="ioc-section" id="section_files" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M4 2h6l4 4v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M10 2v4h4"/></svg></span><span data-i18n="sectionFiles">Bestanden:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="files" checked
+                        onchange="toggleSection('files', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="files"></div>
+        </div>
+
+        <div class="ioc-section" id="section_emails" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M2 4l7 5 7-5"/></svg></span><span data-i18n="sectionEmails">E-mailadressen:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="emails" checked
+                        onchange="toggleSection('emails', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="emails"></div>
+        </div>
+
+        <div class="ioc-section" id="section_md5" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="3" y="3" width="12" height="12" rx="2"/><path d="M6 9h6M9 6v6"/></svg></span><span data-i18n="sectionMD5">MD5:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="md5" checked
+                        onchange="toggleSection('md5', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="md5"></div>
+        </div>
+
+        <div class="ioc-section" id="section_sha1" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/></svg></span><span data-i18n="sectionSHA1">SHA-1:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="sha1" checked
+                        onchange="toggleSection('sha1', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="sha1"></div>
+        </div>
+
+        <div class="ioc-section" id="section_sha256" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/><path d="M7 9l2 2 3-4"/></svg></span><span data-i18n="sectionSHA256">SHA-256:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="sha256" checked
+                        onchange="toggleSection('sha256', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="sha256"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span data-i18n="footerText">Meer info over defanging:</span> <a href="https://defang.me/why.php"
+            target="_blank">defang.me</a>
+    </div>
+
+    <!-- STIX 2.1 Modal -->
+    <div id="stixModal" style="display:none;">
+        <div class="modal-backdrop" onclick="closeStixModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeStixModal()">&times;</button>
+            <h2 data-i18n="stixTitle">STIX 2.1 Export</h2>
+
+            <fieldset>
+                <legend data-i18n="stixMetadata">Bundle Metadata</legend>
+                <label><span data-i18n="stixName">Rapportnaam:</span><br><input type="text" id="stixName"
+                        placeholder="Threat Report"></label>
+                <label><span data-i18n="stixDescription">Beschrijving:</span><br><textarea id="stixDesc" rows="2"
+                        placeholder=""></textarea></label>
+                <label><span data-i18n="stixConfidence">Betrouwbaarheid (0-100):</span><br><input type="number"
+                        id="stixConfidence" min="0" max="100" value="50"></label>
+                <label><span data-i18n="stixTLPLabel">TLP Markering:</span><br>
+                    <select id="stixTLP">
+                        <option value="clear">TLP:CLEAR</option>
+                        <option value="green">TLP:GREEN</option>
+                        <option value="amber" selected>TLP:AMBER</option>
+                        <option value="amber+strict">TLP:AMBER+STRICT</option>
+                        <option value="red">TLP:RED</option>
+                    </select>
+                </label>
+                <label><span data-i18n="stixIdentity">Identiteit / Organisatienaam:</span><br><input type="text"
+                        id="stixIdentity" placeholder=""></label>
+            </fieldset>
+
+            <fieldset>
+                <legend data-i18n="stixSelectedIOCs">Geselecteerde IOCs</legend>
+                <div id="stixIOCSummary" class="stix-ioc-summary"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend data-i18n="stixRelationships">Relaties (SROs)</legend>
+                <div id="stixRelationships"></div>
+                <button onclick="addRelationshipRow()" data-i18n="stixAddRel">+ Relatie toevoegen</button>
+            </fieldset>
+
+            <br>
+            <button onclick="generateAndDownloadSTIX()" data-i18n="stixGenerate">Genereer &amp; Download STIX
+                Bundle</button>
+        </div>
+    </div>
+
+    <!-- Help / Documentation Modal -->
+    <div id="helpModal" style="display:none;">
+        <div class="modal-backdrop" onclick="closeHelpModal()"></div>
+        <div class="modal-content" id="helpModalContent">
+            <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+            <!-- Content filled by JS based on language -->
+        </div>
+    </div>
+
+    <!-- Source text slide-in panel -->
+    <div id="sourcePanel" class="source-panel">
+        <div class="source-panel-resize" id="sourcePanelResize"></div>
+        <div class="source-panel-header">
+            <span id="sourcePanelInfo" data-i18n="sourceClickHint">Brontekst geladen — selecteer een IOC om te markeren</span>
+            <button class="source-panel-close" onclick="closeSourcePanel()" title="Close">&times;</button>
+        </div>
+        <div class="source-panel-body" id="sourcePanelBody"></div>
+    </div>
+
+    <script>
+        // ─── Theme ────────────────────────────────────────────────────────────
+        function initTheme() {
+            const saved = localStorage.getItem('yoink-theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+            // Default is dark (no data-theme attribute needed, :root styles apply)
+        }
+        initTheme();
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            if (next === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', next);
+            }
+            localStorage.setItem('yoink-theme', next);
+            updateFavicon();
+        }
+
+        function updateFavicon() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            const shieldFill = isLight ? '%23f5f6f8' : '%231e1e1e';
+            const accentColor = isLight ? '%231a73e8' : '%234da6ff';
+            const gradStart = isLight ? '%231a73e8' : '%234da6ff';
+            const gradEnd = isLight ? '%231558b0' : '%233385cc';
+            const favicon = document.querySelector('link[rel="icon"]');
+            if (favicon) {
+                favicon.href = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='${gradStart}'/%3E%3Cstop offset='100%25' stop-color='${gradEnd}'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M16 2L4 7v8c0 7.7 5.1 14.9 12 17 6.9-2.1 12-9.3 12-17V7L16 2z' fill='${shieldFill}' stroke='url(%23g)' stroke-width='1.5'/%3E%3Ccircle cx='14' cy='14' r='6' fill='none' stroke='${accentColor}' stroke-width='2'/%3E%3Cline x1='18.5' y1='18.5' x2='24' y2='24' stroke='${accentColor}' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='14' y='17' text-anchor='middle' font-size='7' font-weight='bold' fill='${accentColor}' font-family='Arial'%3EY!%3C/text%3E%3C/svg%3E`;
+            }
+        }
+
+        // ─── Internationalization ────────────────────────────────────────────
+        let currentLang = localStorage.getItem('yoink-lang') || 'nl';
+
+        const LANG = {
+            nl: {
+                title: 'YOINK!',
+                subtitle: 'Your Observables Instantly Nabbed & Kategorized',
+                placeholder: 'Plak hier je tekst...',
+                extractBtn: 'YOINK!',
+                csvBtn: 'Download CSV',
+                jsonBtn: 'Download JSON',
+                stixBtn: 'Download STIX 2.1',
+                helpBtn: 'Documentatie',
+                defangLabel: 'Defang resultaten',
+                refangHeader: 'Refang bewerkingen:',
+                refangIntro: 'Invoertekst is ge-refanged voor extractie:',
+                selectAll: 'Selecteer / Deselecteer alle IOCs',
+                sectionIPs: 'IP-adressen:',
+                sectionURLs: 'URLs:',
+                sectionDomains: 'Domeinen:',
+                sectionEmails: 'E-mailadressen:',
+                sectionFiles: 'Bestanden:',
+                sectionMD5: 'MD5:',
+                sectionSHA1: 'SHA-1:',
+                sectionSHA256: 'SHA-256:',
+                all: 'Alles',
+                noResults: 'Geen gevonden',
+                footerText: 'Meer info over defanging:',
+                unyoinkBtn: 'UN-YOINK!',
+                sourceClickHint: 'Brontekst geladen — selecteer een IOC om te markeren',
+                // STIX modal
+                stixTitle: 'STIX 2.1 Export',
+                stixMetadata: 'Bundle Metadata',
+                stixName: 'Rapportnaam:',
+                stixDescription: 'Beschrijving:',
+                stixConfidence: 'Betrouwbaarheid (0-100):',
+                stixTLPLabel: 'TLP Markering:',
+                stixIdentity: 'Identiteit / Organisatienaam:',
+                stixSelectedIOCs: 'Geselecteerde IOCs',
+                stixRelationships: 'Relaties (SROs)',
+                stixAddRel: '+ Relatie toevoegen',
+                stixGenerate: 'Genereer & Download STIX Bundle',
+                stixNoIOCs: 'Geen IOCs geselecteerd. Ga terug en selecteer er eerst een paar.',
+                stixNeed2: 'Er zijn minimaal 2 geselecteerde IOCs nodig voor een relatie.',
+                stixNoIOCsAlert: 'Geen IOCs geselecteerd.',
+                stixManualEntry: 'Handmatige invoer...',
+                copyTooltip: 'Kopieer',
+                editTooltip: 'Bewerk',
+                deleteTooltip: 'Verwijder',
+                moveToFileBtn: 'Naar bestanden',
+                moveToDomainBtn: 'Naar domeinen',
+                keepBtn: 'Behouden',
+            },
+            en: {
+                title: 'YOINK!',
+                subtitle: 'Your Observables Instantly Nabbed & Kategorized',
+                placeholder: 'Paste your text here...',
+                extractBtn: 'YOINK!',
+                csvBtn: 'Download CSV',
+                jsonBtn: 'Download JSON',
+                stixBtn: 'Download STIX 2.1',
+                helpBtn: 'Documentation',
+                defangLabel: 'Defang results',
+                refangHeader: 'Refang operations:',
+                refangIntro: 'Input text was refanged before extraction:',
+                selectAll: 'Select / Deselect All IOCs',
+                sectionIPs: 'IP Addresses:',
+                sectionURLs: 'URLs:',
+                sectionDomains: 'Domains:',
+                sectionEmails: 'Email Addresses:',
+                sectionFiles: 'Files:',
+                sectionMD5: 'MD5:',
+                sectionSHA1: 'SHA-1:',
+                sectionSHA256: 'SHA-256:',
+                all: 'All',
+                noResults: 'None found',
+                footerText: 'More info about defanging:',
+                unyoinkBtn: 'UN-YOINK!',
+                sourceClickHint: 'Source text loaded — select an IOC to highlight',
+                // STIX modal
+                stixTitle: 'STIX 2.1 Export',
+                stixMetadata: 'Bundle Metadata',
+                stixName: 'Report Name:',
+                stixDescription: 'Description:',
+                stixConfidence: 'Confidence (0-100):',
+                stixTLPLabel: 'TLP Marking:',
+                stixIdentity: 'Identity / Organization Name:',
+                stixSelectedIOCs: 'Selected IOCs',
+                stixRelationships: 'Relationships (SROs)',
+                stixAddRel: '+ Add Relationship',
+                stixGenerate: 'Generate & Download STIX Bundle',
+                stixNoIOCs: 'No IOCs selected. Go back and select some first.',
+                stixNeed2: 'Need at least 2 selected IOCs to create a relationship.',
+                stixNoIOCsAlert: 'No IOCs selected.',
+                stixManualEntry: 'Manual entry...',
+                copyTooltip: 'Copy',
+                editTooltip: 'Edit',
+                deleteTooltip: 'Delete',
+                moveToFileBtn: 'Move to files',
+                moveToDomainBtn: 'Move to domains',
+                keepBtn: 'Keep',
+            }
+        };
+
+        function t(key) { return LANG[currentLang][key] || LANG['en'][key] || key; }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('yoink-lang', lang);
+            document.getElementById('langNL').classList.toggle('active', lang === 'nl');
+            document.getElementById('langEN').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang;
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key === 'stixGenerate') {
+                    el.innerHTML = escapeHtml(t(key));
+                } else {
+                    el.textContent = t(key);
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            });
+            // Re-render no-results if present
+            document.querySelectorAll('.no-results').forEach(el => {
+                el.textContent = t('noResults');
+            });
+            // Update source hint
+            const info = document.getElementById('sourceInfo');
+            if (info && info.textContent) info.textContent = t('sourceClickHint');
+            // Update help modal if open
+            if (document.getElementById('helpModal').style.display === 'block') {
+                renderHelpContent();
+            }
+        }
+
+        // ─── State ───────────────────────────────────────────────────────────
+        let extractedData = { ips: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [] };
+        let extractedCounts = { ips: {}, urls: {}, domains: {}, files: {}, emails: {}, md5: {}, sha1: {}, sha256: {} };
+        let cleanedText = '';
+        let highlightState = { currentIOC: null, currentIndex: -1 };
+        let sourceDisplayHTML = '';
+        let yoinked = false;
+
+        // ─── Init ────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('extractBtn').addEventListener('click', () => {
+                if (yoinked) { switchToEdit(); } else { extractData(); }
+            });
+            document.getElementById('csvBtn').addEventListener('click', downloadCSV);
+            document.getElementById('jsonBtn').addEventListener('click', downloadJSON);
+            document.getElementById('stixBtn').addEventListener('click', openStixModal);
+            document.getElementById('defangToggle').addEventListener('change', extractData);
+            setLanguage(currentLang);
+            updateFavicon();
+            initSourcePanelResize();
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.ioc-longpress-actions')) {
+                    dismissLongPress();
+                }
+            });
+        });
+
+        // ─── Fix line-break broken indicators ────────────────────────────────
+        function fixBrokenLines(input) {
+            let text = input;
+            let count = 0;
+
+            // Matches any URL-like protocol (including defanged variants) followed by content
+            // broken across a newline. Covers: https, http, hxxps, hxxp, ftps, ftp, fxps, fxp, meow
+            const protocolPattern = /((https?|hxxps?|ftps?|fxps?|fxp|meow):\/\/[^\s<>"']*?)\s*\n\s*([^\s<>"'\n:][^\s<>"'\n]*)/gi;
+            // Also handle bracket-protocol variants like hxxps[://]
+            const bracketProtocolPattern = /((https?|hxxps?|ftps?|fxps?|fxp|meow)\[?:\/\/\]?[^\s<>"']*?)\s*\n\s*([^\s<>"'\n:][^\s<>"'\n]*)/gi;
+
+            function rejoin(match, p1, _proto, p2) {
+                // Only rejoin if next line is not a new URL/protocol
+                if (/^(https?|ftps?|ftp|hxxps?|hxxp|fxps?|fxp|meow)(\[?:)?\/\//i.test(p2)) return match;
+                // Only rejoin if p1 ends with . / ] ) (indicates broken domain/path) OR p2 starts with / (path continuation)
+                if (/[.\/\]\)]$/.test(p1) || /^\//.test(p2)) {
+                    count++;
+                    return p1 + p2;
+                }
+                return match;
+            }
+
+            text = text.replace(bracketProtocolPattern, rejoin);
+            text = text.replace(protocolPattern, rejoin);
+
+            return { text, count };
+        }
+
+        // ─── Refang: clean defanged input text ───────────────────────────────
+        function refangText(input) {
+            // First fix line-break broken indicators
+            const linefix = fixBrokenLines(input);
+            let text = linefix.text;
+            const log = [];
+            if (linefix.count > 0) {
+                log.push(`  Line-break repair \u2014 ${linefix.count} broken indicator(s) rejoined`);
+            }
+            const rules = [
+                { pattern: /hxxps\[?:\/\/\]?/gi, replacement: 'https://', label: 'hxxps[://] \u2192 https://' },
+                { pattern: /hxxp\[?:\/\/\]?/gi, replacement: 'http://', label: 'hxxp[://] \u2192 http://' },
+                { pattern: /fxps\[?:\/\/\]?/gi, replacement: 'ftps://', label: 'fxps[://] \u2192 ftps://' },
+                { pattern: /fxp\[?:\/\/\]?/gi, replacement: 'ftp://', label: 'fxp[://] \u2192 ftp://' },
+                { pattern: /meow:\/\//gi, replacement: 'http://', label: 'meow:// \u2192 http://' },
+                { pattern: /\[:\/\/\]/g, replacement: '://', label: '[://] \u2192 ://' },
+                { pattern: /\[\.\]/g, replacement: '.', label: '[.] \u2192 .' },
+                { pattern: /\(\.\)/g, replacement: '.', label: '(.) \u2192 .' },
+                { pattern: /\[dot\]/gi, replacement: '.', label: '[dot] \u2192 .' },
+                { pattern: /\(dot\)/gi, replacement: '.', label: '(dot) \u2192 .' },
+                { pattern: /\[@\]/g, replacement: '@', label: '[@] \u2192 @' },
+                { pattern: /\[at\]/gi, replacement: '@', label: '[at] \u2192 @' },
+                { pattern: /\(at\)/gi, replacement: '@', label: '(at) \u2192 @' },
+                { pattern: /\[:\]/g, replacement: ':', label: '[:] \u2192 :' },
+            ];
+            for (const rule of rules) {
+                const matches = text.match(rule.pattern);
+                if (matches) {
+                    log.push(`  ${rule.label} \u2014 ${matches.length} replacement(s)`);
+                    text = text.replace(rule.pattern, rule.replacement);
+                }
+            }
+            return { cleaned: text, log };
+        }
+
+        // ─── Count occurrences helper ────────────────────────────────────────
+        function countOccurrences(arr) {
+            const map = {};
+            arr.forEach(v => { map[v] = (map[v] || 0) + 1; });
+            return map;
+        }
+
+        // ─── Main extraction ─────────────────────────────────────────────────
+        function extractData() {
+            closeSourcePanel();
+            const rawText = document.getElementById('inputText').value;
+            const { cleaned: text, log: refangLog } = refangText(rawText);
+            const defang = document.getElementById('defangToggle').checked;
+            cleanedText = text;
+
+            // Show refang log
+            const logDiv = document.getElementById('refangLog');
+            const logPre = document.getElementById('refangOutput');
+            if (refangLog.length > 0) {
+                logDiv.style.display = 'block';
+                logPre.textContent = t('refangIntro') + '\n' + refangLog.join('\n');
+            } else {
+                logDiv.style.display = 'none';
+                logPre.textContent = '';
+            }
+
+            const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+            const urlRegex = /\bhttps?:\/\/[^\s<>"']+|ftps?:\/\/[^\s<>"']+/gi;
+            const domainRegex = /\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/g;
+            const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+            const md5Regex = /\b[a-fA-F0-9]{32}\b/g;
+            const sha1Regex = /\b[a-fA-F0-9]{40}\b/g;
+            const sha256Regex = /\b[a-fA-F0-9]{64}\b/g;
+
+            // Extract with counts
+            const rawIPs = text.match(ipRegex) || [];
+            const rawURLs = text.match(urlRegex) || [];
+            const rawEmails = text.match(emailRegex) || [];
+            const rawSHA256 = text.match(sha256Regex) || [];
+            const rawSHA1 = text.match(sha1Regex) || [];
+            const rawMD5 = text.match(md5Regex) || [];
+
+            // Count before dedup
+            const ipCounts = countOccurrences(rawIPs);
+            const urlCounts = countOccurrences(rawURLs);
+            const emailCounts = countOccurrences(rawEmails);
+
+            let ips = Object.keys(ipCounts);
+            let urls = Object.keys(urlCounts);
+            let emails = Object.keys(emailCounts);
+
+            // Hash deduplication: longest first
+            let sha256 = [...new Set(rawSHA256)];
+            const sha256Set = new Set(sha256);
+            let sha1 = [...new Set(rawSHA1)].filter(h => !sha256Set.has(h) && !sha256.some(s => s.includes(h)));
+            const sha1Set = new Set(sha1);
+            let md5 = [...new Set(rawMD5)].filter(h =>
+                !sha256Set.has(h) && !sha1Set.has(h) &&
+                !sha256.some(s => s.includes(h)) && !sha1.some(s => s.includes(h))
+            );
+
+            // Count hashes per type (from raw arrays, filtered to deduped values)
+            const md5Set = new Set(md5);
+            const md5Counts = countOccurrences(rawMD5.filter(h => md5Set.has(h)));
+            const sha1FilterSet = new Set(sha1);
+            const sha1Counts = countOccurrences(rawSHA1.filter(h => sha1FilterSet.has(h)));
+            const sha256Counts = countOccurrences(rawSHA256.filter(h => sha256Set.has(h)));
+
+            // Domain extraction: filter out IPs, numeric-looking, and file names
+            const fileExtensions = new Set([
+                'exe', 'dll', 'sys', 'drv', 'bin', 'dat', 'tmp', 'bak',
+                'msi', 'msp', 'mst', 'cab', 'inf', 'ocx',
+                'bat', 'cmd', 'ps1', 'psm1', 'psd1', 'vbs', 'vbe', 'js', 'jse', 'wsf', 'wsh', 'sh', 'bash',
+                'scr', 'cpl', 'com', 'pif', 'hta', 'lnk',
+                'doc', 'docx', 'docm', 'xls', 'xlsx', 'xlsm', 'ppt', 'pptx', 'pptm',
+                'pdf', 'rtf', 'odt', 'ods', 'odp',
+                'zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'iso', 'img', 'dmg',
+                'jar', 'war', 'ear', 'class', 'py', 'pyc', 'pyw', 'rb', 'pl', 'php',
+                'c', 'cpp', 'h', 'hpp', 'cs', 'java', 'go', 'rs', 'swift',
+                'so', 'dylib', 'a', 'lib', 'o', 'obj',
+                'log', 'cfg', 'ini', 'conf', 'xml', 'json', 'yaml', 'yml', 'toml',
+                'txt', 'csv', 'tsv', 'md',
+                'png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg', 'ico', 'webp',
+                'mp3', 'mp4', 'avi', 'mov', 'mkv', 'wav', 'flac',
+                'html', 'htm', 'css', 'less', 'scss', 'ts', 'tsx', 'jsx',
+                'aspx', 'ashx', 'asmx', 'jsp', 'jspx', 'cfm', 'cgi', 'shtml', 'wasm',
+                'sql', 'db', 'sqlite', 'mdb', 'accdb',
+                'apk', 'ipa', 'deb', 'rpm', 'appimage', 'snap',
+                'elf', 'macho', 'dmp', 'core',
+                'eml', 'msg', 'ics',
+                'key', 'pem', 'crt', 'cer', 'csr', 'p12', 'pfx',
+                'reg', 'pol', 'admx', 'adml'
+            ]);
+            // IANA TLD list (https://data.iana.org/TLD/tlds-alpha-by-domain.txt)
+            // Used to validate that a domain candidate has a real TLD
+            const validTLDs = new Set((
+                'aaa aarp abb abbott abbvie abc able abogado abudhabi ac academy accenture accountant accountants ' +
+                'aco actor ad ads adult ae aeg aero aetna af afl africa ag agakhan agency ai aig airbus airforce ' +
+                'airtel akdn al alibaba alipay allfinanz allstate ally alsace alstom am amazon americanexpress ' +
+                'americanfamily amex amfam amica amsterdam analytics android anquan anz ao aol apartments app apple ' +
+                'aq aquarelle ar arab aramco archi army arpa art arte as asda asia associates at athleta attorney au ' +
+                'auction audi audible audio auspost author auto autos aw aws ax axa az azure ba baby baidu banamex ' +
+                'band bank bar barcelona barclaycard barclays barefoot bargains baseball basketball bauhaus bayern bb ' +
+                'bbc bbt bbva bcg bcn bd be beats beauty beer berlin best bestbuy bet bf bg bh bharti bi bible bid ' +
+                'bike bing bingo bio biz bj black blackfriday blockbuster blog bloomberg blue bm bms bmw bn ' +
+                'bnpparibas bo boats boehringer bofa bom bond boo book booking bosch bostik boston bot boutique box ' +
+                'br bradesco bridgestone broadway broker brother brussels bs bt build builders business buy buzz bv ' +
+                'bw by bz bzh ca cab cafe cal call calvinklein cam camera camp canon capetown capital capitalone car ' +
+                'caravan cards care career careers cars casa case cash casino cat catering catholic cba cbn cbre cc ' +
+                'cd center ceo cern cf cfa cfd cg ch chanel channel charity chase chat cheap chintai christmas ' +
+                'chrome church ci cipriani circle cisco citadel citi citic city ck cl claims cleaning click clinic ' +
+                'clinique clothing cloud club clubmed cm cn co coach codes coffee college cologne com commbank ' +
+                'community company compare computer comsec condos construction consulting contact contractors ' +
+                'cooking cool coop corsica country coupon coupons courses cpa cr credit creditcard creditunion ' +
+                'cricket crown crs cruise cruises cu cuisinella cv cw cx cy cymru cyou cz dad dance data date ' +
+                'dating datsun day dclk dds de deal dealer deals degree delivery dell deloitte delta democrat ' +
+                'dental dentist desi design dev dhl diamonds diet digital direct directory discount discover dish ' +
+                'diy dj dk dm dnp do docs doctor dog domains dot download drive dtv dubai dupont durban dvag dvr dz ' +
+                'earth eat ec eco edeka edu education ee eg email emerald energy engineer engineering enterprises ' +
+                'epson equipment er ericsson erni es esq estate et eu eurovision eus events exchange expert exposed ' +
+                'express extraspace fage fail fairwinds faith family fan fans farm farmers fashion fast fedex ' +
+                'feedback ferrari ferrero fi fidelity fido film final finance financial fire firestone firmdale ' +
+                'fish fishing fit fitness fj fk flickr flights flir florist flowers fly fm fo foo food football ' +
+                'ford forex forsale forum foundation fox fr free fresenius frl frogans frontier ftr fujitsu fun ' +
+                'fund furniture futbol fyi ga gal gallery gallo gallup game games gap garden gay gb gbiz gd gdn ge ' +
+                'gea gent genting george gf gg ggee gh gi gift gifts gives giving gl glass gle global globo gm ' +
+                'gmail gmbh gmo gmx gn godaddy gold goldpoint golf goo goodyear goog google gop got gov gp gq gr ' +
+                'grainger graphics gratis green gripe grocery group gs gt gu gucci guge guide guitars guru gw gy ' +
+                'hair hamburg hangout haus hbo hdfc hdfcbank health healthcare help helsinki here hermes hiphop ' +
+                'hisamitsu hitachi hiv hk hkt hm hn hockey holdings holiday homedepot homegoods homes homesense ' +
+                'honda horse hospital host hosting hot hotels hotmail house how hr hsbc ht hu hughes hyatt hyundai ' +
+                'ibm icbc ice icu id ie ieee ifm ikano il im imamat imdb immo immobilien in inc industries ' +
+                'infiniti info ing ink institute insurance insure int international intuit investments io ipiranga ' +
+                'iq ir irish is ismaili ist istanbul it itau itv jaguar java jcb je jeep jetzt jewelry jio jll jm ' +
+                'jmp jnj jo jobs joburg jot joy jp jpmorgan jprs juegos juniper kaufen kddi ke kerryhotels ' +
+                'kerryproperties kfh kg kh ki kia kids kim kindle kitchen kiwi km kn koeln komatsu kosher kp kpmg ' +
+                'kpn kr krd kred kuokgroup kw ky kyoto kz la lacaixa lamborghini lamer land landrover lanxess ' +
+                'lasalle lat latino latrobe law lawyer lb lc lds lease leclerc lefrak legal lego lexus lgbt li lidl ' +
+                'life lifeinsurance lifestyle lighting like lilly limited limo lincoln link live living lk llc llp ' +
+                'loan loans locker locus lol london lotte lotto love lpl lplfinancial lr ls lt ltd ltda lu lundbeck ' +
+                'luxe luxury lv ly ma madrid maif maison makeup man management mango map market marketing markets ' +
+                'marriott marshalls mattel mba mc mckinsey md me med media meet melbourne meme memorial men menu ' +
+                'merckmsd mg mh miami microsoft mil mini mint mit mitsubishi mk ml mlb mls mm mma mn mo mobi ' +
+                'mobile moda moe moi mom monash money monster mormon mortgage moscow moto motorcycles mov movie mp ' +
+                'mq mr ms msd mt mtn mtr mu museum music mv mw mx my mz na nab nagoya name navy nba nc ne nec net ' +
+                'netbank netflix network neustar new news next nextdirect nexus nf nfl ng ngo nhk ni nico nike ' +
+                'nikon ninja nissan nissay nl no nokia norton now nowruz nowtv np nr nra nrw ntt nu nyc nz obi ' +
+                'observer office okinawa olayan olayangroup ollo om omega one ong onl online ooo open oracle ' +
+                'orange org organic origins osaka otsuka ott ovh pa page panasonic paris pars partners parts party ' +
+                'pay pccw pe pet pf pfizer pg ph pharmacy phd philips phone photo photography photos physio pics ' +
+                'pictet pictures pid pin ping pink pioneer pizza pk pl place play playstation plumbing plus pm pn ' +
+                'pnc pohl poker politie porn post pr praxi press prime pro prod productions prof progressive promo ' +
+                'properties property protection pru prudential ps pt pub pw pwc py qa qpon quebec quest racing ' +
+                'radio re read realestate realtor realty recipes red redumbrella rehab reise reisen reit reliance ' +
+                'ren rent rentals repair report republican rest restaurant review reviews rexroth rich richardli ' +
+                'ricoh ril rio rip ro rocks rodeo rogers room rs rsvp ru rugby ruhr run rw rwe ryukyu sa saarland ' +
+                'safe safety sakura sale salon samsclub samsung sandvik sandvikcoromant sanofi sap sarl sas save ' +
+                'saxo sb sbi sbs sc scb schaeffler schmidt scholarships school schule schwarz science scot sd se ' +
+                'search seat secure security seek select sener services seven sew sex sexy sfr sg sh shangrila ' +
+                'sharp shell shia shiksha shoes shop shopping shouji show si silk sina singles site sj sk ski skin ' +
+                'sky skype sl sling sm smart smile sn sncf so soccer social softbank software sohu solar solutions ' +
+                'song sony soy spa space sport spot sr srl ss st stada staples star statebank statefarm stc ' +
+                'stcgroup stockholm storage store stream studio study style su sucks supplies supply support surf ' +
+                'surgery suzuki sv swatch swiss sx sy sydney systems sz tab taipei talk taobao target tatamotors ' +
+                'tatar tattoo tax taxi tc tci td tdk team tech technology tel temasek tennis teva tf tg th thd ' +
+                'theater theatre tiaa tickets tienda tips tires tirol tj tjmaxx tjx tk tkmaxx tl tm tmall tn to ' +
+                'today tokyo tools top toray toshiba total tours town toyota toys tr trade trading training travel ' +
+                'travelers travelersinsurance trust trv tt tube tui tunes tushu tv tvs tw tz ua ubank ubs ug uk ' +
+                'unicom university uno uol ups us uy uz va vacations vana vanguard vc ve vegas ventures verisign ' +
+                'versicherung vet vg vi viajes video vig viking villas vin vip virgin visa vision viva vivo ' +
+                'vlaanderen vn vodka volvo vote voting voto voyage vu wales walmart walter wang wanggou watch ' +
+                'watches weather weatherchannel webcam weber website wed wedding weibo weir wf whoswho wien wiki ' +
+                'williamhill win windows wine winners wme wolterskluwer woodside work works world wow ws wtc wtf ' +
+                'xbox xerox xihuan xin xxx xyz yachts yahoo yamaxun yandex ye yodobashi yoga yokohama you youtube ' +
+                'yt yun za zappos zara zero zip zm zone zuerich zw'
+            ).split(' '));
+            const ipSet = new Set(ips);
+            const rawDomains = text.match(domainRegex) || [];
+            const filteredEntries = rawDomains.filter(d => {
+                if (ipSet.has(d)) return false;
+                if (/^\d+\.\d+/.test(d)) return false;
+                return true;
+            });
+            // Separate files from domains using IANA TLD validation
+            const fileMatches = [];
+            const domainMatches = [];
+            filteredEntries.forEach(d => {
+                const ext = d.split('.').pop().toLowerCase();
+                if (validTLDs.has(ext)) {
+                    // Valid TLD — treat as domain
+                    domainMatches.push(d);
+                } else if (fileExtensions.has(ext)) {
+                    // Not a valid TLD but is a known file extension — treat as file
+                    fileMatches.push(d);
+                }
+                // else: not a valid TLD and not a known file extension — discard (false positive)
+            });
+            const domainCounts = countOccurrences(domainMatches);
+            let domains = Object.keys(domainCounts);
+            const fileCounts = countOccurrences(fileMatches);
+            let files = Object.keys(fileCounts);
+
+            // Sort
+            ips.sort((a, b) => ipToNumber(a) - ipToNumber(b));
+            urls.sort((a, b) => extractPrimaryDomain(a).localeCompare(extractPrimaryDomain(b)));
+            domains.sort((a, b) => extractPrimaryDomain(a).localeCompare(extractPrimaryDomain(b)));
+            emails.sort((a, b) => a.localeCompare(b));
+            md5.sort(); sha1.sort(); sha256.sort();
+
+            // Sort files
+            files.sort((a, b) => a.localeCompare(b));
+
+            // Store counts
+            extractedCounts = {
+                ips: ipCounts,
+                urls: urlCounts,
+                domains: domainCounts,
+                files: fileCounts,
+                emails: emailCounts,
+                md5: md5Counts,
+                sha1: sha1Counts,
+                sha256: sha256Counts
+            };
+
+            if (defang) {
+                ips = ips.map(defangIP);
+                urls = urls.map(defangURL);
+                domains = domains.map(defangDomain);
+                emails = emails.map(defangEmail);
+            }
+
+            extractedData = { ips, urls, domains, files, emails, md5, sha1, sha256 };
+
+            // Render with checkboxes and show/hide sections
+            const categories = ['ips', 'urls', 'domains', 'files', 'emails', 'md5', 'sha1', 'sha256'];
+            categories.forEach(cat => {
+                const items = extractedData[cat];
+                renderIOCList(cat, items, cat);
+                document.getElementById('section_' + cat).style.display = items.length > 0 ? 'block' : 'none';
+            });
+
+            const totalIOCs = ips.length + urls.length + domains.length + files.length + emails.length + md5.length + sha1.length + sha256.length;
+            document.getElementById('selectAllBar').style.display = totalIOCs > 0 ? 'block' : 'none';
+            document.getElementById('selectAll').checked = true;
+            document.querySelectorAll('.section-toggle').forEach(cb => cb.checked = true);
+
+            // Build source display for panel (not shown at top)
+            if (totalIOCs > 0) {
+                buildSourceDisplay(text);
+                document.getElementById('inputText').style.display = 'none';
+                document.getElementById('sourceBar').style.display = 'flex';
+                document.getElementById('sourceInfo').textContent = t('sourceClickHint');
+                yoinked = true;
+                const btn = document.getElementById('extractBtn');
+                btn.textContent = t('unyoinkBtn');
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-unyoink');
+                document.getElementById('postYoinkControls').style.display = '';
+            }
+        }
+
+        // ─── Source Display with highlight marks ──────────────────────────────
+        function buildSourceDisplay(text) {
+            // Collect all IOC values (raw, pre-defang) and their search strings
+            const allIOCs = [];
+            // For each category, we need the raw (pre-defang) values
+            // We stored cleanedText which is the refanged text used for matching
+            const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+            const urlRegex = /\bhttps?:\/\/[^\s<>"']+|ftps?:\/\/[^\s<>"']+/gi;
+            const domainRegex = /\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/g;
+            const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+            const md5Regex = /\b[a-fA-F0-9]{32}\b/g;
+            const sha1Regex = /\b[a-fA-F0-9]{40}\b/g;
+            const sha256Regex = /\b[a-fA-F0-9]{64}\b/g;
+
+            // Find all matches with positions
+            const matches = [];
+            let m;
+
+            for (const regex of [urlRegex, emailRegex, ipRegex, sha256Regex, sha1Regex, md5Regex, domainRegex]) {
+                regex.lastIndex = 0;
+                while ((m = regex.exec(text)) !== null) {
+                    matches.push({ start: m.index, end: m.index + m[0].length, value: m[0] });
+                }
+            }
+
+            // Sort by start position, longer matches first for same start
+            matches.sort((a, b) => a.start - b.start || b.end - a.end);
+
+            // Remove overlapping matches (keep earlier/longer ones)
+            const filtered = [];
+            let lastEnd = 0;
+            for (const match of matches) {
+                if (match.start >= lastEnd) {
+                    filtered.push(match);
+                    lastEnd = match.end;
+                }
+            }
+
+            // Build HTML
+            let html = '';
+            let pos = 0;
+            for (const match of filtered) {
+                if (match.start > pos) {
+                    html += escapeHtml(text.substring(pos, match.start));
+                }
+                html += `<mark data-ioc="${escapeAttr(match.value)}">${escapeHtml(match.value)}</mark>`;
+                pos = match.end;
+            }
+            if (pos < text.length) {
+                html += escapeHtml(text.substring(pos));
+            }
+
+            sourceDisplayHTML = html;
+        }
+
+        function highlightInSource(rawValue, event) {
+            // Prevent label click from toggling checkbox
+            if (event) event.preventDefault();
+
+            let searchVal = rawValue;
+            // For defanged values, convert back to raw for matching
+            searchVal = searchVal.replace(/\[\.\]/g, '.').replace(/\[@\]/g, '@')
+                .replace(/^hxxps:\/\//i, 'https://').replace(/^hxxp:\/\//i, 'http://')
+                .replace(/^fxps:\/\//i, 'ftps://').replace(/^fxp:\/\//i, 'ftp://');
+
+            // Open source panel if not already open
+            openSourcePanel();
+
+            // Highlight selected IOC in the list
+            document.querySelectorAll('.ioc-item.ioc-selected').forEach(el => el.classList.remove('ioc-selected'));
+            if (event && event.target) {
+                const item = event.target.closest('.ioc-item');
+                if (item) item.classList.add('ioc-selected');
+            }
+
+            // Find all matching marks in the panel (exact match first, then substring fallback)
+            const allMarks = Array.from(document.getElementById('sourcePanelBody').querySelectorAll('mark'));
+            let marks = allMarks.filter(mark => mark.dataset.ioc === searchVal);
+            if (marks.length === 0) {
+                marks = allMarks.filter(mark => mark.dataset.ioc.includes(searchVal));
+            }
+
+            if (marks.length === 0) return;
+
+            // Cycle logic: if same IOC clicked again, advance to next; otherwise start at 0
+            if (highlightState.currentIOC === searchVal) {
+                highlightState.currentIndex = (highlightState.currentIndex + 1) % marks.length;
+            } else {
+                highlightState.currentIOC = searchVal;
+                highlightState.currentIndex = 0;
+            }
+
+            // Highlight all matches, but scroll to the current one
+            clearHighlights();
+            marks.forEach(mark => mark.classList.add('highlight-active'));
+            const target = marks[highlightState.currentIndex];
+            marks.forEach(mark => mark.classList.remove('highlight-focus'));
+            target.classList.add('highlight-focus');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('#sourcePanelBody mark.highlight-active, #sourcePanelBody mark.highlight-focus').forEach(m => {
+                m.classList.remove('highlight-active');
+                m.classList.remove('highlight-focus');
+            });
+        }
+
+        // ─── Source Panel ─────────────────────────────────────────────────────
+        function openSourcePanel() {
+            const panel = document.getElementById('sourcePanel');
+            if (panel.classList.contains('open')) return;
+            document.getElementById('sourcePanelBody').innerHTML = sourceDisplayHTML;
+            panel.classList.add('open');
+        }
+
+        function closeSourcePanel() {
+            const panel = document.getElementById('sourcePanel');
+            panel.classList.remove('open');
+            // Clear selected IOC highlight
+            document.querySelectorAll('.ioc-item.ioc-selected').forEach(el => el.classList.remove('ioc-selected'));
+            highlightState.currentIOC = null;
+            highlightState.currentIndex = -1;
+        }
+
+        function initSourcePanelResize() {
+            const panel = document.getElementById('sourcePanel');
+            const handle = document.getElementById('sourcePanelResize');
+            let isResizing = false;
+
+            handle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const width = window.innerWidth - e.clientX;
+                const minWidth = 200;
+                const maxWidth = window.innerWidth - 200;
+                const clampedWidth = Math.max(minWidth, Math.min(maxWidth, width));
+                panel.style.width = clampedWidth + 'px';
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
+
+        // ─── IOC Actions: flash, copy, edit, delete ──────────────────────────
+        function highlightAndFlash(rawValue, event, labelEl) {
+            highlightInSource(rawValue, event);
+            // Brief flash on the label
+            labelEl.classList.remove('flash');
+            // Force reflow to restart animation
+            void labelEl.offsetWidth;
+            labelEl.classList.add('flash');
+        }
+
+        function copyIOC(value, btnEl) {
+            navigator.clipboard.writeText(value).then(() => {
+                const orig = btnEl.innerHTML;
+                btnEl.innerHTML = '<svg viewBox="0 0 16 16"><path d="M3 8l4 4 6-8"/></svg>';
+                btnEl.style.color = 'var(--accent)';
+                setTimeout(() => { btnEl.innerHTML = orig; btnEl.style.color = ''; }, 1000);
+            });
+        }
+
+        function editIOC(itemId, currentValue, category) {
+            const row = document.getElementById('row_' + itemId);
+            if (!row) return;
+            const label = row.querySelector('label');
+            const actions = row.querySelector('.ioc-actions');
+            // Hide label and actions, show input
+            label.style.display = 'none';
+            actions.style.display = 'none';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'ioc-edit-input';
+            input.value = currentValue;
+            row.insertBefore(input, actions);
+            input.focus();
+            input.select();
+
+            function saveEdit() {
+                const newVal = input.value.trim();
+                if (newVal && newVal !== currentValue) {
+                    // Update the checkbox data-value
+                    const cb = document.getElementById(itemId);
+                    if (cb) cb.dataset.value = newVal;
+                    // Update extractedData
+                    const idx = extractedData[category].indexOf(currentValue);
+                    if (idx !== -1) extractedData[category][idx] = newVal;
+                }
+                // Remove input, re-show label with updated value
+                input.remove();
+                const finalVal = (newVal && newVal !== currentValue) ? newVal : currentValue;
+                const counts = extractedCounts[category] || {};
+                let rawKey = finalVal.replace(/\[\.\]/g, '.').replace(/\[@\]/g, '@')
+                    .replace(/^hxxps:\/\//i, 'https://').replace(/^hxxp:\/\//i, 'http://')
+                    .replace(/^fxps:\/\//i, 'ftps://').replace(/^fxp:\/\//i, 'ftp://');
+                const count = counts[rawKey] || counts[finalVal] || 1;
+                const countDisplay = count > 1 ? ` <span class="ioc-count">(${count})</span>` : '';
+                label.innerHTML = `${escapeHtml(finalVal)}${countDisplay}`;
+                label.setAttribute('onclick', `highlightAndFlash('${escapeAttr(finalVal)}', event, this)`);
+                label.style.display = '';
+                actions.style.display = '';
+                // Update action buttons with new value
+                const btns = actions.querySelectorAll('button');
+                btns[0].setAttribute('onclick', `copyIOC('${escapeAttr(finalVal)}', this)`);
+                btns[1].setAttribute('onclick', `editIOC('${itemId}', '${escapeAttr(finalVal)}', '${category}')`);
+            }
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
+                if (e.key === 'Escape') { input.remove(); label.style.display = ''; actions.style.display = ''; }
+            });
+            input.addEventListener('blur', saveEdit);
+        }
+
+        function deleteIOC(itemId, category) {
+            const row = document.getElementById('row_' + itemId);
+            if (!row) return;
+            const cb = document.getElementById(itemId);
+            const value = cb ? cb.dataset.value : null;
+            // Remove from extractedData
+            if (value) {
+                const idx = extractedData[category].indexOf(value);
+                if (idx !== -1) extractedData[category].splice(idx, 1);
+            }
+            // Remove DOM row
+            row.remove();
+            // Update toggles
+            updateSectionToggle(category);
+            // Show "no results" if category now empty
+            const container = document.getElementById(category);
+            if (container && container.querySelectorAll('.ioc-item').length === 0) {
+                container.innerHTML = `<div class="no-results">${escapeHtml(t('noResults'))}</div>`;
+            }
+            // Update global toggle
+            updateGlobalToggle();
+        }
+
+        function moveIOC(itemId, fromCategory, toCategory) {
+            const row = document.getElementById('row_' + itemId);
+            if (!row) return;
+            const cb = document.getElementById(itemId);
+            const value = cb ? cb.dataset.value : null;
+            if (!value) return;
+            // Remove from source category
+            const idx = extractedData[fromCategory].indexOf(value);
+            if (idx !== -1) extractedData[fromCategory].splice(idx, 1);
+            // Add to target category
+            if (!extractedData[toCategory]) extractedData[toCategory] = [];
+            extractedData[toCategory].push(value);
+            // Re-render both categories
+            const fromContainer = document.getElementById(fromCategory);
+            renderIOCList(fromCategory, extractedData[fromCategory], fromCategory);
+            const toContainer = document.getElementById(toCategory);
+            renderIOCList(toCategory, extractedData[toCategory], toCategory);
+            // Show target section if hidden
+            const toSection = toContainer ? toContainer.closest('.ioc-section') : null;
+            if (toSection) toSection.style.display = '';
+            // Update toggles
+            updateSectionToggle(fromCategory);
+            updateSectionToggle(toCategory);
+            updateGlobalToggle();
+        }
+
+        let longPressTimer = null;
+        let longPressTarget = null;
+        let longPressFired = false;
+
+        function dismissLongPress() {
+            const existing = document.querySelector('.ioc-longpress-actions');
+            if (existing) existing.remove();
+            longPressTarget = null;
+        }
+
+        function showLongPressActions(row, itemId, category) {
+            dismissLongPress();
+            closeSourcePanel();
+            const label = row.querySelector('label');
+            if (!label) return;
+            longPressFired = true;
+            const wrapper = document.createElement('span');
+            wrapper.className = 'ioc-longpress-actions';
+            if (category === 'domains') {
+                wrapper.innerHTML = `<button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); moveIOC('${escapeAttr(itemId)}', 'domains', 'files'); dismissLongPress()">${escapeHtml(t('moveToFileBtn'))}</button><button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); dismissLongPress()">${escapeHtml(t('keepBtn'))}</button>`;
+            } else {
+                wrapper.innerHTML = `<button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); moveIOC('${escapeAttr(itemId)}', 'files', 'domains'); dismissLongPress()">${escapeHtml(t('moveToDomainBtn'))}</button><button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); dismissLongPress()">${escapeHtml(t('keepBtn'))}</button>`;
+            }
+            label.appendChild(wrapper);
+            longPressTarget = row;
+        }
+
+        function initLongPress(row, itemId, category) {
+            const label = row.querySelector('label');
+            if (!label) return;
+            label.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                longPressFired = false;
+                longPressTimer = setTimeout(() => {
+                    longPressTimer = null;
+                    showLongPressActions(row, itemId, category);
+                }, 500);
+            });
+            label.addEventListener('mouseup', () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } });
+            label.addEventListener('mouseleave', () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } });
+            label.addEventListener('click', (e) => {
+                if (longPressFired) { e.stopPropagation(); e.preventDefault(); longPressFired = false; }
+            }, true);
+        }
+
+        function switchToEdit() {
+            closeSourcePanel();
+            document.getElementById('inputText').style.display = 'block';
+            document.getElementById('sourceDisplay').style.display = 'none';
+            document.getElementById('sourceBar').style.display = 'none';
+            yoinked = false;
+            const btn = document.getElementById('extractBtn');
+            btn.textContent = t('extractBtn');
+            btn.classList.remove('btn-unyoink');
+            btn.classList.add('btn-primary');
+            document.getElementById('postYoinkControls').style.display = 'none';
+            document.getElementById('inputText').focus();
+        }
+
+        // ─── Rendering ───────────────────────────────────────────────────────
+        function renderIOCList(containerId, items, category) {
+            const container = document.getElementById(containerId);
+            if (items.length === 0) {
+                container.innerHTML = `<div class="no-results">${escapeHtml(t('noResults'))}</div>`;
+                return;
+            }
+            const counts = extractedCounts[category] || {};
+            container.innerHTML = items.map((item, i) => {
+                // Look up count using the raw (pre-defang) value
+                let rawKey = item;
+                // For display items that were defanged, we need the original key
+                // The counts map uses raw values, so reverse-defang for lookup
+                rawKey = item.replace(/\[\.\]/g, '.').replace(/\[@\]/g, '@')
+                    .replace(/^hxxps:\/\//i, 'https://').replace(/^hxxp:\/\//i, 'http://')
+                    .replace(/^fxps:\/\//i, 'ftps://').replace(/^fxp:\/\//i, 'ftp://');
+                const count = counts[rawKey] || counts[item] || 1;
+                const countDisplay = count > 1 ? ` <span class="ioc-count">(${count})</span>` : '';
+                const itemId = `${category}_${i}`;
+                return `<div class="ioc-item" id="row_${itemId}">
+            <input type="checkbox" checked
+                   id="${itemId}"
+                   data-category="${category}"
+                   data-value="${escapeAttr(item)}"
+                   onchange="updateSectionToggle('${category}')">
+            <label onclick="highlightAndFlash('${escapeAttr(item)}', event, this)">${escapeHtml(item)}${countDisplay}</label>
+            <div class="ioc-actions">
+                <button title="${escapeAttr(t('copyTooltip'))}" onclick="copyIOC('${escapeAttr(item)}', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
+                <button title="${escapeAttr(t('editTooltip'))}" onclick="editIOC('${itemId}', '${escapeAttr(item)}', '${category}')"><svg viewBox="0 0 16 16"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>
+                <button class="delete-btn" title="${escapeAttr(t('deleteTooltip'))}" onclick="deleteIOC('${itemId}', '${category}')"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+            </div>
+        </div>`;
+            }).join('');
+            // Attach long-press handlers for domains and files
+            if (category === 'domains' || category === 'files') {
+                items.forEach((item, i) => {
+                    const itemId = `${category}_${i}`;
+                    const row = document.getElementById('row_' + itemId);
+                    if (row) initLongPress(row, itemId, category);
+                });
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(str) {
+            return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;');
+        }
+
+        // ─── Selection toggles ──────────────────────────────────────────────
+        function toggleSection(category, checked) {
+            document.querySelectorAll(`input[data-category="${category}"]`).forEach(cb => cb.checked = checked);
+            updateGlobalToggle();
+        }
+
+        function toggleAllGlobal(checked) {
+            document.querySelectorAll('.ioc-item input[type="checkbox"]').forEach(cb => cb.checked = checked);
+            document.querySelectorAll('.section-toggle').forEach(cb => cb.checked = checked);
+        }
+
+        function updateSectionToggle(category) {
+            const boxes = document.querySelectorAll(`input[data-category="${category}"]`);
+            const allChecked = Array.from(boxes).every(cb => cb.checked);
+            const toggle = document.querySelector(`.section-toggle[data-section="${category}"]`);
+            if (toggle) toggle.checked = allChecked;
+            updateGlobalToggle();
+        }
+
+        function updateGlobalToggle() {
+            const allBoxes = document.querySelectorAll('.ioc-item input[type="checkbox"]');
+            if (allBoxes.length === 0) return;
+            document.getElementById('selectAll').checked = Array.from(allBoxes).every(cb => cb.checked);
+        }
+
+        // ─── Get selected IOCs ──────────────────────────────────────────────
+        function getSelectedIOCs() {
+            const selected = { ips: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [] };
+            document.querySelectorAll('.ioc-item input[type="checkbox"]:checked').forEach(cb => {
+                const cat = cb.dataset.category;
+                const val = cb.dataset.value;
+                if (selected[cat]) selected[cat].push(val);
+            });
+            return selected;
+        }
+
+        // ─── Helpers ─────────────────────────────────────────────────────────
+        function ipToNumber(ip) { return ip.split('.').reduce((acc, octet) => acc * 256 + parseInt(octet), 0); }
+        function extractPrimaryDomain(str) {
+            let domain = str.replace(/^(https?|ftps?|ftp):\/\//i, '').split('/')[0];
+            let parts = domain.split('.');
+            return parts.length > 1 ? parts[parts.length - 2] : domain;
+        }
+
+        function defangIP(ip) { return ip.replace(/\./g, '[.]'); }
+        function defangURL(url) {
+            return url.replace(/^https:\/\//i, 'hxxps://').replace(/^http:\/\//i, 'hxxp://')
+                .replace(/^ftps:\/\//i, 'fxps://').replace(/^ftp:\/\//i, 'fxp://');
+        }
+        function defangDomain(domain) { return domain.replace(/\./g, '[.]'); }
+        function defangEmail(email) { return email.replace(/\./g, '[.]'); }
+
+        // ─── CSV Export (selected only) ──────────────────────────────────────
+        function downloadCSV() {
+            const data = getSelectedIOCs();
+            let csv = "Type,Value\n";
+            data.ips.forEach(v => csv += `IP,"${csvEscape(v)}"\n`);
+            data.urls.forEach(v => csv += `URL,"${csvEscape(v)}"\n`);
+            data.domains.forEach(v => csv += `Domain,"${csvEscape(v)}"\n`);
+            data.files.forEach(v => csv += `File,"${csvEscape(v)}"\n`);
+            data.emails.forEach(v => csv += `Email,"${csvEscape(v)}"\n`);
+            data.md5.forEach(v => csv += `MD5,"${csvEscape(v)}"\n`);
+            data.sha1.forEach(v => csv += `SHA-1,"${csvEscape(v)}"\n`);
+            data.sha256.forEach(v => csv += `SHA-256,"${csvEscape(v)}"\n`);
+            downloadFile(csv, 'extracted.csv', 'text/csv');
+        }
+
+        function csvEscape(str) { return str.replace(/"/g, '""'); }
+
+        // ─── JSON Export (selected only) ─────────────────────────────────────
+        function downloadJSON() {
+            const data = getSelectedIOCs();
+            downloadFile(JSON.stringify(data, null, 2), 'extracted.json', 'application/json');
+        }
+
+        // ─── File download helper ────────────────────────────────────────────
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ─── UUID v4 generator ───────────────────────────────────────────────
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        // ─── STIX 2.1 Modal ─────────────────────────────────────────────────
+        function openStixModal() {
+            const data = getSelectedIOCs();
+            const allItems = [];
+            data.ips.forEach(v => allItems.push({ cat: 'ip', value: v, stixType: 'ipv4-addr' }));
+            data.urls.forEach(v => allItems.push({ cat: 'url', value: v, stixType: 'url' }));
+            data.domains.forEach(v => allItems.push({ cat: 'domain', value: v, stixType: 'domain-name' }));
+            data.files.forEach(v => allItems.push({ cat: 'file', value: v, stixType: 'file', fileName: v }));
+            data.emails.forEach(v => allItems.push({ cat: 'email', value: v, stixType: 'email-addr' }));
+            data.md5.forEach(v => allItems.push({ cat: 'md5', value: v, stixType: 'file', hashType: 'MD5' }));
+            data.sha1.forEach(v => allItems.push({ cat: 'sha1', value: v, stixType: 'file', hashType: 'SHA-1' }));
+            data.sha256.forEach(v => allItems.push({ cat: 'sha256', value: v, stixType: 'file', hashType: 'SHA-256' }));
+
+            window._stixItems = allItems;
+
+            const summary = document.getElementById('stixIOCSummary');
+            if (allItems.length === 0) {
+                summary.innerHTML = `<em>${escapeHtml(t('stixNoIOCs'))}</em>`;
+            } else {
+                summary.innerHTML = allItems.map(item =>
+                    `<div><span class="stix-ioc-type">[${escapeHtml(item.stixType)}]</span> ${escapeHtml(item.value)}</div>`
+                ).join('');
+            }
+
+            document.getElementById('stixRelationships').innerHTML = '';
+            document.getElementById('stixModal').style.display = 'block';
+        }
+
+        function closeStixModal() {
+            document.getElementById('stixModal').style.display = 'none';
+        }
+
+        function addRelationshipRow() {
+            const items = window._stixItems || [];
+
+            const container = document.getElementById('stixRelationships');
+            const row = document.createElement('div');
+            row.className = 'rel-row';
+
+            const relationshipTypes = [
+                'related-to', 'indicates', 'uses', 'targets', 'attributed-to',
+                'mitigates', 'derived-from', 'based-on', 'communicates-with',
+                'consists-of', 'controls', 'delivers', 'drops', 'exploits',
+                'hosts', 'located-at', 'originates-from', 'resolves-to'
+            ];
+
+            const optionsHtml = items.map((item, i) =>
+                `<option value="${i}">${escapeHtml(item.value)} (${item.stixType})</option>`
+            ).join('');
+            const manualLabel = escapeHtml(t('stixManualEntry'));
+            const fullOptionsHtml = optionsHtml + `<option value="__manual__">${manualLabel}</option>`;
+
+            const relOptionsHtml = relationshipTypes.map(r => `<option value="${r}">${r}</option>`).join('');
+
+            row.innerHTML = `
+        <select class="rel-source" onchange="handleRelManualToggle(this)">${fullOptionsHtml}</select>
+        <select class="rel-type">${relOptionsHtml}</select>
+        <select class="rel-target" onchange="handleRelManualToggle(this)">${fullOptionsHtml}</select>
+        <button onclick="this.parentElement.remove()">Remove</button>
+    `;
+            container.appendChild(row);
+        }
+
+        function handleRelManualToggle(selectEl) {
+            const existingInput = selectEl.nextElementSibling;
+            if (selectEl.value === '__manual__') {
+                if (!existingInput || !existingInput.classList.contains('rel-manual-input')) {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'rel-manual-input';
+                    input.placeholder = t('stixManualEntry');
+                    input.style.cssText = 'background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-light);padding:6px;border-radius:3px;flex:1;min-width:120px;';
+                    selectEl.parentElement.insertBefore(input, selectEl.nextSibling);
+                }
+            } else {
+                if (existingInput && existingInput.classList.contains('rel-manual-input')) {
+                    existingInput.remove();
+                }
+            }
+        }
+
+        // ─── STIX 2.1 Bundle Generation ─────────────────────────────────────
+        function generateAndDownloadSTIX() {
+            const items = window._stixItems || [];
+            if (items.length === 0) { alert(t('stixNoIOCsAlert')); return; }
+
+            const name = document.getElementById('stixName').value || 'Extracted IOCs';
+            const description = document.getElementById('stixDesc').value || '';
+            const confidence = parseInt(document.getElementById('stixConfidence').value) || 50;
+            const tlpValue = document.getElementById('stixTLP').value;
+            const identityName = document.getElementById('stixIdentity').value || 'Unknown';
+
+            const now = new Date().toISOString();
+
+            const tlpMap = {
+                'clear': 'marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487',
+                'green': 'marking-definition--bab4a63c-aed9-4571-9c39-3bbc68ba41dc',
+                'amber': 'marking-definition--55d920b0-5e8b-4f79-9ee9-91f868d9b421',
+                'amber+strict': 'marking-definition--939a9414-2ddd-4d32-a0cd-b7571b03f817',
+                'red': 'marking-definition--e828b379-4e03-4974-9ac4-e53a884c97c1',
+            };
+            const tlpMarkingId = tlpMap[tlpValue];
+
+            const identityId = 'identity--' + uuidv4();
+            const identityObj = {
+                type: 'identity', spec_version: '2.1', id: identityId,
+                created: now, modified: now, name: identityName,
+                identity_class: 'organization', object_marking_refs: [tlpMarkingId]
+            };
+
+            const objects = [identityObj];
+            const indicatorIds = [];
+
+            items.forEach((item) => {
+                const scoId = `${item.stixType}--${uuidv4()}`;
+                let sco;
+                switch (item.stixType) {
+                    case 'ipv4-addr': sco = { type: 'ipv4-addr', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'url': sco = { type: 'url', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'domain-name': sco = { type: 'domain-name', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'email-addr': sco = { type: 'email-addr', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'file':
+                        if (item.hashType) {
+                            sco = buildFileHash(scoId, item.value, item.hashType);
+                        } else if (item.fileName) {
+                            sco = { type: 'file', spec_version: '2.1', id: scoId, name: item.fileName };
+                        }
+                        break;
+                }
+                if (sco) { sco.object_marking_refs = [tlpMarkingId]; objects.push(sco); }
+
+                const indId = 'indicator--' + uuidv4();
+                indicatorIds.push(indId);
+                objects.push({
+                    type: 'indicator', spec_version: '2.1', id: indId,
+                    created: now, modified: now, name: item.value,
+                    description: `Extracted ${item.stixType}: ${item.value}`,
+                    indicator_types: ['malicious-activity'],
+                    pattern: buildSTIXPattern(item), pattern_type: 'stix',
+                    valid_from: now, confidence: confidence,
+                    created_by_ref: identityId, object_marking_refs: [tlpMarkingId]
+                });
+            });
+
+            // Track manually entered indicators to avoid duplicates
+            const manualIndicatorMap = {};
+
+            function getOrCreateManualIndicator(manualValue) {
+                if (manualIndicatorMap[manualValue]) return manualIndicatorMap[manualValue];
+                const indId = 'indicator--' + uuidv4();
+                objects.push({
+                    type: 'indicator', spec_version: '2.1', id: indId,
+                    created: now, modified: now, name: manualValue,
+                    description: `Manually entered: ${manualValue}`,
+                    indicator_types: ['malicious-activity'],
+                    pattern: `[artifact:payload_bin = '${manualValue.replace(/'/g, "\\'")}']`,
+                    pattern_type: 'stix',
+                    valid_from: now, confidence: confidence,
+                    created_by_ref: identityId, object_marking_refs: [tlpMarkingId]
+                });
+                indicatorIds.push(indId);
+                manualIndicatorMap[manualValue] = indId;
+                return indId;
+            }
+
+            document.querySelectorAll('.rel-row').forEach(row => {
+                const srcSelect = row.querySelector('.rel-source');
+                const relType = row.querySelector('.rel-type').value;
+                const tgtSelect = row.querySelector('.rel-target');
+
+                let sourceRef;
+                if (srcSelect.value === '__manual__') {
+                    const input = srcSelect.nextElementSibling;
+                    const manualVal = input ? input.value.trim() : '';
+                    if (!manualVal) return;
+                    sourceRef = getOrCreateManualIndicator(manualVal);
+                } else {
+                    sourceRef = indicatorIds[parseInt(srcSelect.value)];
+                }
+
+                let targetRef;
+                if (tgtSelect.value === '__manual__') {
+                    const input = tgtSelect.nextElementSibling;
+                    const manualVal = input ? input.value.trim() : '';
+                    if (!manualVal) return;
+                    targetRef = getOrCreateManualIndicator(manualVal);
+                } else {
+                    targetRef = indicatorIds[parseInt(tgtSelect.value)];
+                }
+
+                objects.push({
+                    type: 'relationship', spec_version: '2.1', id: 'relationship--' + uuidv4(),
+                    created: now, modified: now, relationship_type: relType,
+                    source_ref: sourceRef, target_ref: targetRef,
+                    created_by_ref: identityId, object_marking_refs: [tlpMarkingId]
+                });
+            });
+
+            if (name || description) {
+                objects.push({
+                    type: 'report', spec_version: '2.1', id: 'report--' + uuidv4(),
+                    created: now, modified: now, name: name, description: description,
+                    published: now, object_refs: indicatorIds,
+                    created_by_ref: identityId, object_marking_refs: [tlpMarkingId]
+                });
+            }
+
+            const bundle = { type: 'bundle', id: 'bundle--' + uuidv4(), objects: objects };
+            downloadFile(JSON.stringify(bundle, null, 2), 'stix_bundle.json', 'application/json');
+            closeStixModal();
+        }
+
+        function buildFileHash(id, hashVal, hashType) {
+            const obj = { type: 'file', spec_version: '2.1', id: id, hashes: {} };
+            obj.hashes[hashType] = hashVal;
+            return obj;
+        }
+
+        function buildSTIXPattern(item) {
+            const val = item.value.replace(/'/g, "\\'");
+            switch (item.stixType) {
+                case 'ipv4-addr': return `[ipv4-addr:value = '${val}']`;
+                case 'url': return `[url:value = '${val}']`;
+                case 'domain-name': return `[domain-name:value = '${val}']`;
+                case 'email-addr': return `[email-addr:value = '${val}']`;
+                case 'file':
+                    if (item.hashType) return `[file:hashes.'${item.hashType}' = '${val}']`;
+                    if (item.fileName) return `[file:name = '${val}']`;
+                    return `[file:name = 'unknown']`;
+                default: return '';
+            }
+        }
+
+        // ─── Help / Documentation Modal ──────────────────────────────────────
+        function openHelpModal() {
+            renderHelpContent();
+            document.getElementById('helpModal').style.display = 'block';
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+
+        function renderHelpContent() {
+            const c = document.getElementById('helpModalContent');
+            const isNL = currentLang === 'nl';
+
+            c.innerHTML = `
+        <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+        <h2>${isNL ? 'YOINK! Documentatie' : 'YOINK! Documentation'}</h2>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Overzicht' : 'Overview'}</h3>
+            <p>${isNL
+                    ? '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extraheert Indicators of Compromise (IOCs) uit platte tekst. Het herkent IP-adressen, URLs, domeinnamen, bestandsnamen (bijv. malware.exe, payload.dll), e-mailadressen en cryptografische hashes (MD5, SHA-1, SHA-256). Domeinnamen worden gevalideerd met de offici\u00EBle IANA TLD-lijst om valse positieven te voorkomen. Bestandsnamen worden automatisch gescheiden van domeinnamen. Geextraheerde IOCs kunnen worden ge-defanged, bewerkt, verwijderd, geselecteerd en geexporteerd naar CSV, JSON of STIX 2.1 formaat.'
+                    : '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extracts Indicators of Compromise (IOCs) from plain text. It recognizes IP addresses, URLs, domain names, file names (e.g. malware.exe, payload.dll), email addresses, and cryptographic hashes (MD5, SHA-1, SHA-256). Domain names are validated against the official IANA TLD list to reduce false positives. File names are automatically separated from domain names. Extracted IOCs can be defanged, edited, deleted, individually selected, and exported to CSV, JSON, or STIX 2.1 format.'
+                }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Domeinvalidatie (IANA TLD)' : 'Domain validation (IANA TLD)'}</h3>
+            <p>${isNL
+                    ? 'Om valse positieven te verminderen valideert de tool het top-level domein (TLD) van elke domeinkandidaat aan de hand van de offici\u00EBle <strong>IANA TLD-lijst</strong> (<em>Internet Assigned Numbers Authority</em>, bron: data.iana.org/TLD/tlds-alpha-by-domain.txt). Alleen kandidaten waarvan het laatste deel (bijv. "com" in google.com) een geldig TLD is, worden als domein geclassificeerd.'
+                    : 'To reduce false positives, the tool validates the top-level domain (TLD) of each domain candidate against the official <strong>IANA TLD list</strong> (<em>Internet Assigned Numbers Authority</em>, source: data.iana.org/TLD/tlds-alpha-by-domain.txt). Only candidates whose last part (e.g. "com" in google.com) is a valid TLD are classified as a domain.'
+                }</p>
+            <p>${isNL ? '<strong>Classificatielogica:</strong>' : '<strong>Classification logic:</strong>'}</p>
+            <table class="doc-table">
+                <tr><th>TLD</th><th>${isNL ? 'Bestandsextensie?' : 'File extension?'}</th><th>${isNL ? 'Resultaat' : 'Result'}</th><th>${isNL ? 'Voorbeeld' : 'Example'}</th></tr>
+                <tr><td>${isNL ? 'Geldig' : 'Valid'}</td><td>${isNL ? 'Nee' : 'No'}</td><td>${isNL ? 'Domein' : 'Domain'}</td><td>google.com, evil.network</td></tr>
+                <tr><td>${isNL ? 'Geldig' : 'Valid'}</td><td>${isNL ? 'Ja' : 'Yes'}</td><td>${isNL ? 'Domein (TLD heeft prioriteit)' : 'Domain (valid TLD takes priority)'}</td><td>archive.zip, old.cab, clip.mov</td></tr>
+                <tr><td>${isNL ? 'Ongeldig' : 'Invalid'}</td><td>${isNL ? 'Ja' : 'Yes'}</td><td>${isNL ? 'Bestand' : 'File'}</td><td>malware.exe, head.js, inloggen.aspx</td></tr>
+                <tr><td>${isNL ? 'Ongeldig' : 'Invalid'}</td><td>${isNL ? 'Nee' : 'No'}</td><td>${isNL ? 'Verworpen (vals positief)' : 'Discarded (false positive)'}</td><td>window.location, i.length</td></tr>
+            </table>
+            <p>${isNL
+                    ? 'Extensies die zowel een geldig TLD als een veelgebruikte bestandsextensie zijn (bijv. <code>.zip</code>, <code>.cab</code>, <code>.mov</code>, <code>.com</code>) worden als <strong>domein</strong> behandeld, omdat het geldige TLD prioriteit krijgt. Dit betekent dat <code>archive.zip</code> als domein wordt geclassificeerd, niet als bestand.'
+                    : 'Extensions that are both a valid TLD and a common file extension (e.g. <code>.zip</code>, <code>.cab</code>, <code>.mov</code>, <code>.com</code>) are treated as <strong>domains</strong>, because the valid TLD takes priority. This means <code>archive.zip</code> is classified as a domain, not a file.'
+                }</p>
+            <p>${isNL
+                    ? 'Kandidaten met een ongeldig TLD die ook geen bekende bestandsextensie hebben (bijv. <code>window.location</code>, <code>i.length</code>, <code>href.match</code>) worden volledig verworpen als valse positieven.'
+                    : 'Candidates with an invalid TLD that also do not have a known file extension (e.g. <code>window.location</code>, <code>i.length</code>, <code>href.match</code>) are discarded entirely as false positives.'
+                }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Wat is defanging?' : 'What is defanging?'}</h3>
+            <p>${isNL
+                    ? 'Defanging is een techniek die wordt gebruikt in cybersecurity en threat intelligence om te voorkomen dat indicatoren (URLs, IPs, domeinen, e-mailadressen) per ongeluk worden geactiveerd. Door specifieke tekens te vervangen worden links onklikbaar en worden domeinen niet automatisch opgelost. Dit is belangrijk bij het delen van dreigingsinformatie via e-mail, rapporten of chatberichten.'
+                    : 'Defanging is a technique used in cybersecurity and threat intelligence to prevent indicators (URLs, IPs, domains, email addresses) from being accidentally activated. By replacing specific characters, links become unclickable and domains are not automatically resolved. This is essential when sharing threat intelligence via email, reports, or chat messages.'
+                }</p>
+            <p>${isNL ? '<strong>Waarom defanging gebruiken?</strong>' : '<strong>Why use defanging?</strong>'}</p>
+            <ul>
+                <li>${isNL ? 'Voorkomt dat e-mailclients en browsers URLs automatisch activeren' : 'Prevents email clients and browsers from automatically activating URLs'}</li>
+                <li>${isNL ? 'Voorkomt dat beveiligingstools verkeer naar kwaadaardige domeinen genereren' : 'Prevents security tools from generating traffic to malicious domains'}</li>
+                <li>${isNL ? 'Maakt het veilig om IOCs te delen in rapporten en communicatie' : 'Makes it safe to share IOCs in reports and communications'}</li>
+                <li>${isNL ? 'Standaardpraktijk in threat intelligence gemeenschappen' : 'Standard practice in threat intelligence communities'}</li>
+            </ul>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Ondersteunde defang-formaten' : 'Supported defang formats'}</h3>
+            <p>${isNL
+                    ? 'Deze tool past de volgende defang-transformaties toe bij het exporteren:'
+                    : 'This tool applies the following defang transformations when exporting:'
+                }</p>
+            <table class="doc-table">
+                <tr><th>${isNL ? 'Type' : 'Type'}</th><th>${isNL ? 'Origineel' : 'Original'}</th><th>${isNL ? 'Ge-defanged' : 'Defanged'}</th><th>${isNL ? 'Beschrijving' : 'Description'}</th></tr>
+                <tr><td>URL</td><td>https://</td><td>hxxps://</td><td>${isNL ? 'Protocol vervangen om klikbaarheid te voorkomen' : 'Protocol replaced to prevent clickability'}</td></tr>
+                <tr><td>URL</td><td>http://</td><td>hxxp://</td><td>${isNL ? 'Protocol vervangen' : 'Protocol replaced'}</td></tr>
+                <tr><td>URL</td><td>ftps://</td><td>fxps://</td><td>${isNL ? 'FTP-protocol vervangen' : 'FTP protocol replaced'}</td></tr>
+                <tr><td>URL</td><td>ftp://</td><td>fxp://</td><td>${isNL ? 'FTP-protocol vervangen' : 'FTP protocol replaced'}</td></tr>
+                <tr><td>IP/Domein</td><td>.</td><td>[.]</td><td>${isNL ? 'Punt tussen vierkante haken om DNS-resolutie te voorkomen' : 'Dot wrapped in brackets to prevent DNS resolution'}</td></tr>
+                <tr><td>E-mail</td><td>.</td><td>[.]</td><td>${isNL ? 'Punt in e-mailadres tussen vierkante haken' : 'Dot in email wrapped in brackets'}</td></tr>
+            </table>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Automatische refang (invoerreiniging)' : 'Automatic refanging (input cleaning)'}</h3>
+            <p>${isNL
+                    ? 'Wanneer u tekst plakt die al ge-defangde indicatoren bevat, worden deze automatisch teruggezet naar hun originele vorm zodat ze correct geextraheerd kunnen worden. Het logboek toont welke bewerkingen zijn uitgevoerd.'
+                    : 'When you paste text containing already-defanged indicators, they are automatically converted back to their original form so they can be correctly extracted. The log shows which operations were performed.'
+                }</p>
+            <table class="doc-table">
+                <tr><th>${isNL ? 'Ge-defanged invoer' : 'Defanged input'}</th><th>${isNL ? 'Hersteld naar' : 'Restored to'}</th></tr>
+                <tr><td>hxxps://</td><td>https://</td></tr>
+                <tr><td>hxxp://</td><td>http://</td></tr>
+                <tr><td>fxps://</td><td>ftps://</td></tr>
+                <tr><td>fxp://</td><td>ftp://</td></tr>
+                <tr><td>meow://</td><td>http://</td></tr>
+                <tr><td>[://]</td><td>://</td></tr>
+                <tr><td>[.]</td><td>.</td></tr>
+                <tr><td>(.)</td><td>.</td></tr>
+                <tr><td>[dot]</td><td>.</td></tr>
+                <tr><td>(dot)</td><td>.</td></tr>
+                <tr><td>[@]</td><td>@</td></tr>
+                <tr><td>[at]</td><td>@</td></tr>
+                <tr><td>(at)</td><td>@</td></tr>
+                <tr><td>[:]</td><td>:</td></tr>
+            </table>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'IOC-selectie en bronweergave' : 'IOC selection and source viewer'}</h3>
+            <p>${isNL
+                    ? 'Na extractie wordt elke IOC weergegeven met een selectievakje. U kunt individuele IOCs selecteren of deselecteren, per categorie schakelen met de "Alles" schakelaar, of alle IOCs tegelijk selecteren/deselecteren. Het aantal vermeldingen wordt weergegeven tussen haakjes wanneer een indicator meer dan eenmaal voorkomt.'
+                    : 'After extraction, each IOC is displayed with a checkbox. You can select or deselect individual IOCs, toggle per category with the "All" switch, or select/deselect all IOCs at once. The number of mentions is shown in parentheses when an indicator appears more than once.'
+                }</p>
+            <p>${isNL
+                    ? '<strong>Bronweergavepaneel:</strong> Klik op een indicator om een schuifpaneel te openen aan de rechterkant van het scherm. Dit paneel toont de volledige brontekst met alle voorkomens van de geselecteerde indicator gemarkeerd. U kunt herhaaldelijk op dezelfde indicator klikken om door de voorkomens te bladeren. Het paneel kan breder of smaller worden gemaakt door de linkerrand te slepen. De geselecteerde indicator blijft gemarkeerd in de IOC-lijst totdat u het paneel sluit.'
+                    : '<strong>Source viewer panel:</strong> Click on any indicator to open a slide-in panel on the right side of the screen. This panel shows the full source text with all occurrences of the selected indicator highlighted. You can click the same indicator repeatedly to cycle through occurrences. The panel can be resized by dragging its left edge. The selected indicator stays highlighted in the IOC list until you close the panel.'
+                }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'IOC-acties' : 'IOC actions'}</h3>
+            <p>${isNL
+                    ? 'Elke geextraheerde IOC heeft drie actieknoppen:'
+                    : 'Each extracted IOC has three action buttons:'
+                }</p>
+            <ul>
+                <li>${isNL ? '<strong>Kopi\u00EBren</strong> — kopieert de waarde naar het klembord' : '<strong>Copy</strong> — copies the value to the clipboard'}</li>
+                <li>${isNL ? '<strong>Bewerken</strong> — maakt inline bewerking van de waarde mogelijk (bevestig met Enter, annuleer met Escape)' : '<strong>Edit</strong> — allows inline editing of the value (confirm with Enter, cancel with Escape)'}</li>
+                <li>${isNL ? '<strong>Verwijderen</strong> — verwijdert de IOC uit de lijst' : '<strong>Delete</strong> — removes the IOC from the list'}</li>
+                <li>${isNL ? '<strong>Verplaatsen</strong> — houd een domein- of bestandsindicator lang ingedrukt (500ms) om verplaatsknoppen te tonen. U kunt de IOC verplaatsen naar de andere categorie (domeinen ↔ bestanden) of behouden. Handig wanneer de automatische classificatie een indicator in de verkeerde categorie heeft geplaatst.' : '<strong>Move</strong> — long-press (500ms) a domain or file indicator to reveal move buttons. You can move the IOC to the other category (domains ↔ files) or keep it. Useful when the automatic classification placed an indicator in the wrong category.'}</li>
+            </ul>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Exportformaten' : 'Export formats'}</h3>
+            <p><strong>CSV</strong> ${isNL
+                    ? '— Komma-gescheiden bestand met Type en Waarde kolommen. Alleen geselecteerde IOCs worden geexporteerd.'
+                    : '— Comma-separated file with Type and Value columns. Only selected IOCs are exported.'
+                }</p>
+            <p><strong>JSON</strong> ${isNL
+                    ? '— Gestructureerd JSON-bestand met arrays per IOC-categorie. Alleen geselecteerde IOCs worden geexporteerd.'
+                    : '— Structured JSON file with arrays per IOC category. Only selected IOCs are exported.'
+                }</p>
+            <p><strong>STIX 2.1</strong> ${isNL
+                    ? '— Structured Threat Information Expression bundel. Bevat Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs met STIX-patronen, optionele Relationship SROs, een Report SDO, en TLP-markeringen. U kunt metadata invullen, relaties defini\u00EBren, en handmatig tekst invoeren als bron of doel van relaties in het STIX-exportvenster.'
+                    : '— Structured Threat Information Expression bundle. Contains Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs with STIX patterns, optional Relationship SROs, a Report SDO, and TLP markings. You can fill in metadata, define relationships, and manually enter text as source or target of relationships in the STIX export window.'
+                }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Thema en taal' : 'Theme and language'}</h3>
+            <p>${isNL
+                    ? 'Gebruik de schakelaar rechtsboven om te wisselen tussen donker en licht thema. Gebruik de NL/EN knoppen om te schakelen tussen Nederlands en Engels. Beide voorkeuren worden onthouden.'
+                    : 'Use the toggle in the top-right corner to switch between dark and light theme. Use the NL/EN buttons to switch between Dutch and English. Both preferences are remembered.'
+                }</p>
+        </div>
+    `;
+        }
+    </script>
+</body>
+
+</html>
