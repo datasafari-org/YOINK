@@ -4,7 +4,7 @@
 
 > A zero-dependency, single-file HTML tool that yoinks Indicators of Compromise out of raw text. Extract, defang, edit, and export to CSV, JSON, or STIX 2.1 — all from one file you can run anywhere.
 
-![YOINK! - extraction view](screenshots/extract-dark.png)
+![YOINK! - extraction view](screenshots/yoink.png)
 
 ---
 
