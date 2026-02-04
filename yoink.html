@@ -650,6 +650,54 @@
             color: var(--accent);
         }
 
+        /* ─── SIEM Query Modal ────────────────────────────────────────────── */
+        .siem-query-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .siem-query-section h3 {
+            margin: 0 0 10px 0;
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        .siem-query-box {
+            position: relative;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .siem-copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--accent);
+            color: var(--btn-primary-text);
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .siem-copy-btn:hover {
+            background: var(--accent-hover);
+        }
+
         /* ─── Help modal docs ─────────────────────────────────────────────── */
         .doc-section {
             margin: 15px 0;
@@ -877,6 +925,7 @@
             <button id="csvBtn" data-i18n="csvBtn">Download CSV</button>
             <button id="jsonBtn" data-i18n="jsonBtn">Download JSON</button>
             <button id="stixBtn" data-i18n="stixBtn">Download STIX 2.1</button>
+            <button id="siemBtn" data-i18n="siemBtn">SIEM Queries</button>
             <label style="margin-left:10px;"><input type="checkbox" id="defangToggle"> <span data-i18n="defangLabel">Defang
                     resultaten</span></label>
         </span>
@@ -967,8 +1016,11 @@
     </div>
 
     <div class="footer">
-        <span data-i18n="footerText">Meer info over defanging:</span> <a href="https://defang.me/why.php"
-            target="_blank">defang.me</a>
+        <span data-i18n="footerText">Meer info over defanging:</span> <a href="https://www.ietf.org/archive/id/draft-grimminck-safe-ioc-sharing-00.html"
+            target="_blank">IETF Draft</a>
+        <span style="margin: 0 10px;">|</span>
+        <span data-i18n="githubText">Project on GitHub:</span> <a href="https://github.com/datasafari-org/YOINK/blob/main/yoink.html"
+            target="_blank">datasafari-org/YOINK</a>
     </div>
 
     <!-- STIX 2.1 Modal -->
@@ -1013,6 +1065,21 @@
             <br>
             <button onclick="generateAndDownloadSTIX()" data-i18n="stixGenerate">Genereer &amp; Download STIX
                 Bundle</button>
+        </div>
+    </div>
+
+    <!-- SIEM Query Modal -->
+    <div id="siemModal" style="display:none;">
+        <div class="modal-backdrop" onclick="closeSiemModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSiemModal()">&times;</button>
+            <h2 data-i18n="siemTitle">SIEM Wildcard Queries</h2>
+
+            <p data-i18n="siemDescription">Copy and paste these wildcard queries directly into your SIEM to hunt for the selected IOCs.</p>
+
+            <div id="siemQueryContent">
+                <!-- Content filled by JS -->
+            </div>
         </div>
     </div>
 
@@ -1071,7 +1138,7 @@
         }
 
         // ─── Internationalization ────────────────────────────────────────────
-        let currentLang = localStorage.getItem('yoink-lang') || 'nl';
+        let currentLang = localStorage.getItem('yoink-lang') || 'en';
 
         const LANG = {
             nl: {
@@ -1082,6 +1149,7 @@
                 csvBtn: 'Download CSV',
                 jsonBtn: 'Download JSON',
                 stixBtn: 'Download STIX 2.1',
+                siemBtn: 'SIEM Queries',
                 helpBtn: 'Documentatie',
                 defangLabel: 'Defang resultaten',
                 refangHeader: 'Refang bewerkingen:',
@@ -1098,6 +1166,7 @@
                 all: 'Alles',
                 noResults: 'Geen gevonden',
                 footerText: 'Meer info over defanging:',
+                githubText: 'Project op GitHub:',
                 unyoinkBtn: 'UN-YOINK!',
                 sourceClickHint: 'Brontekst geladen — selecteer een IOC om te markeren',
                 // STIX modal
@@ -1116,6 +1185,14 @@
                 stixNeed2: 'Er zijn minimaal 2 geselecteerde IOCs nodig voor een relatie.',
                 stixNoIOCsAlert: 'Geen IOCs geselecteerd.',
                 stixManualEntry: 'Handmatige invoer...',
+                stixWIPWarning: '⚠️ STIX 2.1 Export is nog in ontwikkeling.\n\nDe functionaliteit werkt maar kan bugs bevatten. Controleer altijd de gegenereerde STIX-bundels voordat u deze gebruikt in productieomgevingen.\n\nWilt u doorgaan?',
+                siemTitle: 'SIEM Wildcard Queries',
+                siemDescription: 'Kopieer en plak deze wildcard queries direct in uw SIEM om te zoeken naar de geselecteerde IOCs.',
+                siemSentinel: 'Microsoft Sentinel',
+                siemSplunk: 'Splunk',
+                siemElastic: 'Elastic Security (ELK)',
+                siemCopyBtn: 'Kopieer',
+                siemNoIOCs: 'Geen IOCs geselecteerd.',
                 copyTooltip: 'Kopieer',
                 editTooltip: 'Bewerk',
                 deleteTooltip: 'Verwijder',
@@ -1131,6 +1208,7 @@
                 csvBtn: 'Download CSV',
                 jsonBtn: 'Download JSON',
                 stixBtn: 'Download STIX 2.1',
+                siemBtn: 'SIEM Queries',
                 helpBtn: 'Documentation',
                 defangLabel: 'Defang results',
                 refangHeader: 'Refang operations:',
@@ -1147,6 +1225,7 @@
                 all: 'All',
                 noResults: 'None found',
                 footerText: 'More info about defanging:',
+                githubText: 'Project on GitHub:',
                 unyoinkBtn: 'UN-YOINK!',
                 sourceClickHint: 'Source text loaded — select an IOC to highlight',
                 // STIX modal
@@ -1165,6 +1244,14 @@
                 stixNeed2: 'Need at least 2 selected IOCs to create a relationship.',
                 stixNoIOCsAlert: 'No IOCs selected.',
                 stixManualEntry: 'Manual entry...',
+                stixWIPWarning: '⚠️ STIX 2.1 Export is still a Work in Progress.\n\nThe functionality works but may contain bugs. Always validate the generated STIX bundles before using them in production environments.\n\nDo you want to continue?',
+                siemTitle: 'SIEM Wildcard Queries',
+                siemDescription: 'Copy and paste these wildcard queries directly into your SIEM to hunt for the selected IOCs.',
+                siemSentinel: 'Microsoft Sentinel',
+                siemSplunk: 'Splunk',
+                siemElastic: 'Elastic Security (ELK)',
+                siemCopyBtn: 'Copy',
+                siemNoIOCs: 'No IOCs selected.',
                 copyTooltip: 'Copy',
                 editTooltip: 'Edit',
                 deleteTooltip: 'Delete',
@@ -1226,6 +1313,7 @@
             document.getElementById('csvBtn').addEventListener('click', downloadCSV);
             document.getElementById('jsonBtn').addEventListener('click', downloadJSON);
             document.getElementById('stixBtn').addEventListener('click', openStixModal);
+            document.getElementById('siemBtn').addEventListener('click', openSiemModal);
             document.getElementById('defangToggle').addEventListener('change', extractData);
             setLanguage(currentLang);
             updateFavicon();
@@ -2044,6 +2132,11 @@
 
         // ─── STIX 2.1 Modal ─────────────────────────────────────────────────
         function openStixModal() {
+            // Show WIP warning first
+            if (!confirm(t('stixWIPWarning'))) {
+                return;
+            }
+
             const data = getSelectedIOCs();
             const allItems = [];
             data.ips.forEach(v => allItems.push({ cat: 'ip', value: v, stixType: 'ipv4-addr' }));
@@ -2273,6 +2366,135 @@
                     return `[file:name = 'unknown']`;
                 default: return '';
             }
+        }
+
+        // ─── SIEM Query Modal ────────────────────────────────────────────────
+        function openSiemModal() {
+            const data = getSelectedIOCs();
+            const content = document.getElementById('siemQueryContent');
+
+            // Collect all IOCs
+            const allIPs = data.ips || [];
+            const allDomains = data.domains || [];
+            const allURLs = data.urls || [];
+            const allHashes = [...(data.md5 || []), ...(data.sha1 || []), ...(data.sha256 || [])];
+            const allEmails = data.emails || [];
+
+            if (allIPs.length === 0 && allDomains.length === 0 && allURLs.length === 0 &&
+                allHashes.length === 0 && allEmails.length === 0) {
+                content.innerHTML = `<p style="color: var(--text-secondary);"><em>${escapeHtml(t('siemNoIOCs'))}</em></p>`;
+                document.getElementById('siemModal').style.display = 'block';
+                return;
+            }
+
+            let html = '';
+
+            // Microsoft Sentinel (KQL)
+            html += `<div class="siem-query-section">
+                <h3>${escapeHtml(t('siemSentinel'))}</h3>`;
+
+            if (allIPs.length > 0) {
+                const ipQuery = allIPs.map(ip => `"${ip}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// IP addresses
+let MaliciousIPs = dynamic([${ipQuery}]);
+CommonSecurityLog
+| where DestinationIP in (MaliciousIPs) or SourceIP in (MaliciousIPs)
+| project TimeGenerated, SourceIP, DestinationIP, DeviceAction, Message</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allDomains.length > 0) {
+                const domainQuery = allDomains.map(d => `"${d}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// Domains
+let MaliciousDomains = dynamic([${domainQuery}]);
+DnsEvents
+| where Name in (MaliciousDomains)
+| project TimeGenerated, Computer, ClientIP, Name, QueryType</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allHashes.length > 0) {
+                const hashQuery = allHashes.map(h => `"${h.toLowerCase()}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// File Hashes
+let MaliciousHashes = dynamic([${hashQuery}]);
+DeviceFileEvents
+| where tolower(MD5) in (MaliciousHashes) or tolower(SHA1) in (MaliciousHashes) or tolower(SHA256) in (MaliciousHashes)
+| project TimeGenerated, DeviceName, FileName, FolderPath, MD5, SHA1, SHA256</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            html += `</div>`;
+
+            // Splunk (SPL)
+            html += `<div class="siem-query-section">
+                <h3>${escapeHtml(t('siemSplunk'))}</h3>`;
+
+            if (allIPs.length > 0) {
+                const ipQuery = allIPs.map(ip => `"${ip}"`).join(' OR dest_ip=');
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* (src_ip="${allIPs[0]}"${allIPs.length > 1 ? ' OR src_ip=' + allIPs.slice(1).map(ip => `"${ip}"`).join(' OR src_ip=') : ''} OR dest_ip="${allIPs[0]}"${allIPs.length > 1 ? ' OR dest_ip=' + allIPs.slice(1).map(ip => `"${ip}"`).join(' OR dest_ip=') : ''})
+| stats count by _time, src_ip, dest_ip, action
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allDomains.length > 0) {
+                const domainQuery = allDomains.map(d => `"${d}"`).join(' OR query=');
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* sourcetype=dns (query="${allDomains[0]}"${allDomains.length > 1 ? ' OR query=' + allDomains.slice(1).map(d => `"${d}"`).join(' OR query=') : ''})
+| stats count by _time, src, query, answer
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allHashes.length > 0) {
+                const hashQuery = allHashes.map(h => `"${h.toLowerCase()}"`).join(' OR hash=');
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* (hash="${allHashes[0].toLowerCase()}"${allHashes.length > 1 ? ' OR hash=' + allHashes.slice(1).map(h => `"${h.toLowerCase()}"`).join(' OR hash=') : ''})
+| stats count by _time, file_name, file_path, hash, host
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            html += `</div>`;
+
+            // Elastic Security (ELK)
+            html += `<div class="siem-query-section">
+                <h3>${escapeHtml(t('siemElastic'))}</h3>`;
+
+            if (allIPs.length > 0) {
+                const ipQuery = allIPs.map(ip => `"${ip}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">source.ip:(${ipQuery}) OR destination.ip:(${ipQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allDomains.length > 0) {
+                const domainQuery = allDomains.map(d => `"${d}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">dns.question.name:(${domainQuery}) OR url.domain:(${domainQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allHashes.length > 0) {
+                const hashQuery = allHashes.map(h => `"${h.toLowerCase()}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">file.hash.md5:(${hashQuery}) OR file.hash.sha1:(${hashQuery}) OR file.hash.sha256:(${hashQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            html += `</div>`;
+
+            content.innerHTML = html;
+            document.getElementById('siemModal').style.display = 'block';
+        }
+
+        function closeSiemModal() {
+            document.getElementById('siemModal').style.display = 'none';
+        }
+
+        function copySiemQuery(btn) {
+            const queryBox = btn.previousElementSibling;
+            const text = queryBox.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ ' + originalText;
+                setTimeout(() => { btn.textContent = originalText; }, 2000);
+            });
         }
 
         // ─── Help / Documentation Modal ──────────────────────────────────────
