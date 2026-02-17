@@ -8,66 +8,154 @@
     <style>
         /* ─── Theme variables ─────────────────────────────────────────────── */
         :root {
-            --bg-primary: #1e1e1e;
-            --bg-secondary: #2e2e2e;
-            --bg-tertiary: #333;
-            --bg-hover: rgba(77, 166, 255, 0.15);
-            --text-primary: #f0f0f0;
-            --text-secondary: #aaa;
-            --text-muted: #888;
-            --text-disabled: #666;
-            --accent: #4da6ff;
-            --accent-hover: #3385cc;
-            --accent-subtle: rgba(77, 166, 255, 0.1);
-            --accent-flash: rgba(77, 166, 255, 0.3);
-            --border: #444;
-            --border-light: #555;
-            --highlight-active: #2a6bbf;
-            --highlight-focus: #4da6ff;
+            /* Backgrounds — PRISM gray-900/800/700 palette */
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-tertiary: #374151;
+            --bg-hover: rgba(96, 165, 250, 0.15);
+            /* Text */
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --text-disabled: #4b5563;
+            /* Accent — PRISM blue-400 */
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --accent-subtle: rgba(96, 165, 250, 0.1);
+            --accent-flash: rgba(96, 165, 250, 0.3);
+            /* Semantic colors — PRISM palette */
+            --accent-success: #34d399;
+            --accent-warning: #fbbf24;
+            --accent-danger-color: #f87171;
+            --accent-info: #60a5fa;
+            /* Borders & shadows */
+            --border: #374151;
+            --border-light: #4b5563;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5);
+            /* Highlight states (source viewer) */
+            --highlight-active: #1d4ed8;
+            --highlight-focus: #60a5fa;
             --highlight-focus-text: #000;
             --highlight-outline: #fff;
-            --mark-border: #666;
-            --refang-text: #aad4ff;
-            --danger: #ff6b6b;
-            --danger-bg: rgba(255, 107, 107, 0.1);
+            --mark-border: #4b5563;
+            /* Tool-specific */
+            --refang-text: #93c5fd;
+            --danger: #f87171;
+            --danger-bg: rgba(248, 113, 113, 0.1);
             --modal-backdrop: rgba(0, 0, 0, 0.7);
-            --table-even: #2a2a2a;
-            --btn-primary-text: #000;
-            --icon-color: #c0c0c0;
+            --table-even: #1f2937;
+            --btn-primary-text: #fff;
+            --icon-color: #9ca3af;
         }
 
         [data-theme="light"] {
-            --bg-primary: #f5f6f8;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #e8eaed;
-            --bg-hover: rgba(26, 115, 200, 0.08);
-            --text-primary: #1a1a1a;
-            --text-secondary: #555;
-            --text-muted: #777;
-            --text-disabled: #999;
-            --accent: #1a73e8;
-            --accent-hover: #1558b0;
-            --accent-subtle: rgba(26, 115, 232, 0.08);
-            --accent-flash: rgba(26, 115, 232, 0.2);
-            --border: #d0d4da;
-            --border-light: #c0c4ca;
-            --highlight-active: #c8ddf5;
-            --highlight-focus: #1a73e8;
+            /* Backgrounds — PRISM white/gray-100/gray-200 palette */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --bg-tertiary: #e5e7eb;
+            --bg-hover: rgba(59, 130, 246, 0.08);
+            /* Text */
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --text-disabled: #d1d5db;
+            /* Accent — PRISM blue-500 */
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-subtle: rgba(59, 130, 246, 0.08);
+            --accent-flash: rgba(59, 130, 246, 0.2);
+            /* Semantic colors — PRISM palette */
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger-color: #ef4444;
+            --accent-info: #3b82f6;
+            /* Borders & shadows */
+            --border: #e5e7eb;
+            --border-light: #d1d5db;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            /* Highlight states (source viewer) */
+            --highlight-active: #bfdbfe;
+            --highlight-focus: #3b82f6;
             --highlight-focus-text: #fff;
-            --highlight-outline: #1a73e8;
-            --mark-border: #b0b4ba;
-            --refang-text: #1558b0;
-            --danger: #d93025;
-            --danger-bg: rgba(217, 48, 37, 0.08);
+            --highlight-outline: #1d4ed8;
+            --mark-border: #d1d5db;
+            /* Tool-specific */
+            --refang-text: #1d4ed8;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.08);
             --modal-backdrop: rgba(0, 0, 0, 0.4);
-            --table-even: #f0f2f5;
+            --table-even: #f9fafb;
             --btn-primary-text: #fff;
-            --icon-color: #444;
+            --icon-color: #6b7280;
         }
+
+        /* ─── PRISM Design System Components ─────────────────────────────── */
+
+        /* Card — PRISM widget equivalent */
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Badges — pill-shaped semantic labels */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            line-height: 1.25;
+        }
+
+        .badge-success { background-color: var(--accent-success); color: #fff; }
+        .badge-warning { background-color: var(--accent-warning); color: #fff; }
+        .badge-danger  { background-color: var(--accent-danger-color); color: #fff; }
+        .badge-info    { background-color: var(--accent-info); color: #fff; }
+
+        /* Status dots — inline state indicators */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .status-dot.success { background-color: var(--accent-success); }
+        .status-dot.warning { background-color: var(--accent-warning); }
+        .status-dot.error   { background-color: var(--accent-danger-color); }
+        .status-dot.inactive { background-color: var(--text-secondary); }
+
+        /* Spinner — loading animation */
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Utility text colors */
+        .text-success { color: var(--accent-success); }
+        .text-warning { color: var(--accent-warning); }
+        .text-danger  { color: var(--accent-danger-color); }
+        .text-info    { color: var(--accent-info); }
+        .text-muted   { color: var(--text-muted); }
 
         /* ─── Base ────────────────────────────────────────────────────────── */
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             margin: 0;
@@ -87,22 +175,32 @@
             background-color: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border);
-            padding: 10px;
+            padding: 0.5rem 0.75rem;
             font-size: 14px;
+            font-family: inherit;
+            border-radius: 0.375rem;
             box-sizing: border-box;
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-subtle);
         }
 
         button {
             background-color: transparent;
             color: var(--accent);
             border: 1px solid var(--accent);
-            padding: 10px 20px;
-            margin: 10px 5px;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.25rem;
             cursor: pointer;
-            font-weight: bold;
-            border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            font-weight: 500;
+            font-family: inherit;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
         }
 
         button:hover {
@@ -113,10 +211,17 @@
             background-color: var(--accent);
             color: var(--btn-primary-text);
             border: none;
+            padding: 0.5rem 1rem;
         }
 
         button.btn-primary:hover {
+            opacity: 0.9;
             background-color: var(--accent-hover);
+        }
+
+        button.btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         button.btn-unyoink {
@@ -129,11 +234,47 @@
             background-color: var(--accent-subtle);
         }
 
+        /* PRISM btn-icon — icon-only transparent button */
+        .btn-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin: 0;
+            font-size: 1.25rem;
+            transition: opacity 0.2s;
+            border-radius: 0.25rem;
+            line-height: 1;
+        }
+
+        .btn-icon:hover {
+            opacity: 0.7;
+        }
+
+        /* PRISM btn-link — text link style */
+        .btn-link {
+            color: var(--accent);
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
         .output {
-            margin-top: 20px;
+            margin-top: 1rem;
             background-color: var(--bg-secondary);
-            padding: 10px;
+            padding: 1rem;
             border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
             transition: background-color 0.3s, border-color 0.3s;
         }
 
@@ -157,7 +298,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .top-bar h1 {
@@ -177,7 +324,7 @@
             align-items: center;
             background: var(--bg-secondary);
             border: 1px solid var(--border-light);
-            border-radius: 6px;
+            border-radius: 0.375rem;
             padding: 2px;
             transition: background-color 0.3s, border-color 0.3s;
         }
@@ -189,7 +336,7 @@
             margin: 0;
             font-size: 20px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             color: var(--text-primary);
             line-height: 1;
             opacity: 0.5;
@@ -302,13 +449,15 @@
             background-color: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border);
-            padding: 10px;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
             font-size: 14px;
             box-sizing: border-box;
             white-space: pre-wrap;
             word-wrap: break-word;
             font-family: monospace;
             line-height: 1.5;
+            box-shadow: var(--shadow);
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
 
@@ -348,12 +497,14 @@
         /* ─── Refang log ──────────────────────────────────────────────────── */
         #refangLog {
             border-left: 3px solid var(--accent);
-            margin-top: 10px;
+            margin-top: 0.75rem;
             background-color: var(--bg-secondary);
-            padding: 10px;
+            padding: 0.75rem;
             border-right: 1px solid var(--border);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
+            border-radius: 0 0.375rem 0.375rem 0;
+            box-shadow: var(--shadow);
             transition: background-color 0.3s, border-color 0.3s;
         }
 
@@ -397,10 +548,24 @@
             margin-left: 6px;
         }
 
+        /* ─── IOC section — PRISM widget style ────────────────────────────── */
+        .ioc-section {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
         .section-header {
             display: flex;
             align-items: center;
             gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .section-header label {
@@ -415,10 +580,12 @@
         }
 
         .select-all-bar {
-            margin: 10px 0;
-            padding: 8px 10px;
+            margin: 0.5rem 0;
+            padding: 0.5rem 0.75rem;
             background-color: var(--bg-secondary);
             border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            box-shadow: var(--shadow);
             transition: background-color 0.3s, border-color 0.3s;
         }
 
@@ -454,7 +621,7 @@
             padding: 2px 6px;
             margin: 0;
             font-size: 13px;
-            border-radius: 3px;
+            border-radius: 0.25rem;
             line-height: 1;
         }
 
@@ -490,7 +657,7 @@
             padding: 1px 8px;
             font-size: 12px;
             font-family: inherit;
-            border-radius: 3px;
+            border-radius: 0.25rem;
             line-height: 1.4;
             white-space: nowrap;
         }
@@ -508,8 +675,9 @@
             font-family: monospace;
             font-size: 14px;
             flex: 1;
-            border-radius: 3px;
-            outline: none;
+            border-radius: 0.25rem;
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
         }
 
         /* ─── Flash animation ─────────────────────────────────────────────── */
@@ -542,9 +710,10 @@
             overflow-y: auto;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 20px;
-            border: 1px solid var(--accent);
-            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             z-index: 1000;
             box-sizing: border-box;
             transition: background-color 0.3s, color 0.3s;
@@ -561,9 +730,9 @@
 
         .modal-content fieldset {
             border: 1px solid var(--border-light);
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            border-radius: 0.375rem;
         }
 
         .modal-content legend {
@@ -582,19 +751,19 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             border: 1px solid var(--border-light);
-            padding: 6px;
+            padding: 0.375rem 0.5rem;
             width: 100%;
             box-sizing: border-box;
-            border-radius: 3px;
+            border-radius: 0.375rem;
         }
 
         .modal-content input[type="number"] {
             background: var(--bg-primary);
             color: var(--text-primary);
             border: 1px solid var(--border-light);
-            padding: 6px;
+            padding: 0.375rem 0.5rem;
             width: 100px;
-            border-radius: 3px;
+            border-radius: 0.375rem;
         }
 
         .modal-close {
@@ -652,45 +821,50 @@
 
         /* ─── SIEM Query Modal ────────────────────────────────────────────── */
         .siem-query-section {
-            margin: 20px 0;
-            padding: 15px;
+            margin: 1.25rem 0;
+            padding: 1rem;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .siem-query-section h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 0.75rem 0;
             color: var(--accent);
-            font-size: 16px;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .siem-query-box {
             position: relative;
             background: var(--bg-primary);
-            border: 1px solid var(--border-light);
-            border-radius: 4px;
-            padding: 12px;
-            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin: 0.625rem 0;
             font-family: monospace;
             font-size: 13px;
             white-space: pre-wrap;
             word-break: break-all;
             max-height: 300px;
             overflow-y: auto;
+            box-shadow: var(--shadow);
         }
 
         .siem-copy-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 0.5rem;
+            right: 0.5rem;
             background: var(--accent);
             color: var(--btn-primary-text);
             border: none;
-            padding: 6px 12px;
+            padding: 0.25rem 0.75rem;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 0.375rem;
             font-size: 12px;
+            font-weight: 500;
             transition: background 0.2s;
         }
 
@@ -700,30 +874,37 @@
 
         /* ─── Help modal docs ─────────────────────────────────────────────── */
         .doc-section {
-            margin: 15px 0;
+            margin: 1rem 0;
         }
 
         .doc-section p {
             line-height: 1.6;
-            margin: 8px 0;
+            margin: 0.5rem 0;
         }
 
         .doc-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin: 0.75rem 0;
+            border-radius: 0.375rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         .doc-table th,
         .doc-table td {
             border: 1px solid var(--border-light);
-            padding: 6px 10px;
+            padding: 0.4rem 0.75rem;
             text-align: left;
         }
 
         .doc-table th {
             background-color: var(--bg-tertiary);
             color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .doc-table td {
@@ -812,7 +993,7 @@
             padding: 0;
             margin: 0;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 0.375rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -890,7 +1071,7 @@
     <!-- Top bar: title + controls -->
     <div class="top-bar">
         <div style="display:flex;flex-direction:column;align-items:center;">
-            <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v0.7-beta</sup></h1>
+            <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v1.1</sup></h1>
             <span data-i18n="subtitle" style="font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;margin-top:-2px;">Your Observables Instantly Nabbed &amp; Kategorized</span>
         </div>
         <div class="top-bar-controls">
@@ -949,6 +1130,24 @@
                         onchange="toggleSection('ips', this.checked)"> <span data-i18n="all">Alles</span></label>
             </div>
             <div id="ips"></div>
+        </div>
+
+        <div class="ioc-section" id="section_ipv6" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M2 9h14M9 2c-2.5 2.5-2.5 11.5 0 14M9 2c2.5 2.5 2.5 11.5 0 14"/><path d="M6 6.5h2v2h2v2H8" stroke-width="1" fill="none"/></svg></span><span data-i18n="sectionIPv6">IPv6-adressen:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="ipv6" checked
+                        onchange="toggleSection('ipv6', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="ipv6"></div>
+        </div>
+
+        <div class="ioc-section" id="section_cidr" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="5" width="14" height="8" rx="1"/><path d="M6 9h6M9 5v8"/></svg></span><span data-i18n="sectionCIDR">CIDR-bereiken:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="cidr" checked
+                        onchange="toggleSection('cidr', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="cidr"></div>
         </div>
 
         <div class="ioc-section" id="section_urls" style="display:none;">
@@ -1013,6 +1212,33 @@
             </div>
             <div id="sha256"></div>
         </div>
+
+        <div class="ioc-section" id="section_sha512" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/><path d="M7 9l2 2 3-4"/><circle cx="9" cy="9" r="2" fill="none" stroke-width="1"/></svg></span><span data-i18n="sectionSHA512">SHA-512:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="sha512" checked
+                        onchange="toggleSection('sha512', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="sha512"></div>
+        </div>
+
+        <div class="ioc-section" id="section_cves" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2l1.5 4h4l-3.5 2.5 1.5 4L9 10l-3.5 2.5 1.5-4L3.5 6h4L9 2z"/></svg></span><span data-i18n="sectionCVEs">CVEs:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="cves" checked
+                        onchange="toggleSection('cves', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="cves"></div>
+        </div>
+
+        <div class="ioc-section" id="section_attackTechniques" style="display:none;">
+            <div class="section-header">
+                <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M3 15l4-4m0 0l6-6m-6 6L4 8l7-5 4 4-5 7z"/></svg></span><span data-i18n="sectionATTACK">ATT&amp;CK Technieken:</span></h3>
+                <label><input type="checkbox" class="section-toggle" data-section="attackTechniques" checked
+                        onchange="toggleSection('attackTechniques', this.checked)"> <span data-i18n="all">Alles</span></label>
+            </div>
+            <div id="attackTechniques"></div>
+        </div>
     </div>
 
     <div class="footer">
@@ -1021,6 +1247,8 @@
         <span style="margin: 0 10px;">|</span>
         <span data-i18n="githubText">Project on GitHub:</span> <a href="https://github.com/datasafari-org/YOINK/blob/main/yoink.html"
             target="_blank">datasafari-org/YOINK</a>
+        <span style="margin: 0 10px;">|</span>
+        <span style="color: var(--text-secondary);">v1.1</span>
     </div>
 
     <!-- STIX 2.1 Modal -->
@@ -1163,6 +1391,11 @@
                 sectionMD5: 'MD5:',
                 sectionSHA1: 'SHA-1:',
                 sectionSHA256: 'SHA-256:',
+                sectionIPv6: 'IPv6-adressen:',
+                sectionCIDR: 'CIDR-bereiken:',
+                sectionSHA512: 'SHA-512:',
+                sectionCVEs: 'CVEs:',
+                sectionATTACK: 'ATT&CK Technieken:',
                 all: 'Alles',
                 noResults: 'Geen gevonden',
                 footerText: 'Meer info over defanging:',
@@ -1222,6 +1455,11 @@
                 sectionMD5: 'MD5:',
                 sectionSHA1: 'SHA-1:',
                 sectionSHA256: 'SHA-256:',
+                sectionIPv6: 'IPv6 Addresses:',
+                sectionCIDR: 'CIDR Ranges:',
+                sectionSHA512: 'SHA-512:',
+                sectionCVEs: 'CVEs:',
+                sectionATTACK: 'ATT&CK Techniques:',
                 all: 'All',
                 noResults: 'None found',
                 footerText: 'More info about defanging:',
@@ -1298,8 +1536,8 @@
         }
 
         // ─── State ───────────────────────────────────────────────────────────
-        let extractedData = { ips: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [] };
-        let extractedCounts = { ips: {}, urls: {}, domains: {}, files: {}, emails: {}, md5: {}, sha1: {}, sha256: {} };
+        let extractedData = { ips: [], ipv6: [], cidr: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [], sha512: [], cves: [], attackTechniques: [] };
+        let extractedCounts = { ips: {}, ipv6: {}, cidr: {}, urls: {}, domains: {}, files: {}, emails: {}, md5: {}, sha1: {}, sha256: {}, sha512: {}, cves: {}, attackTechniques: {} };
         let cleanedText = '';
         let highlightState = { currentIOC: null, currentIndex: -1 };
         let sourceDisplayHTML = '';
@@ -1421,11 +1659,17 @@
             const md5Regex = /\b[a-fA-F0-9]{32}\b/g;
             const sha1Regex = /\b[a-fA-F0-9]{40}\b/g;
             const sha256Regex = /\b[a-fA-F0-9]{64}\b/g;
+            const sha512Regex = /\b[a-fA-F0-9]{128}\b/g;
+            const cveRegex = /\bCVE-(?:19[0-9]{2}|20[0-2][0-9])-\d{4,}\b/gi;
+            const attackTechRegex = /\b(?:TA\d{4}|T\d{4}(?:\.\d{3})?)\b/g;
+            const cidrIPv4Regex = /\b(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\.){3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\/(?:3[0-2]|[12]?[0-9])\b/g;
+            const ipv6Regex = /(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|:(?::[0-9a-fA-F]{1,4}){1,7}|::(?:ffff(?::0{1,4})?:)?(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])(?:\.(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])){3}|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])(?:\.(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])){3})/g;
 
             // Extract with counts
             const rawIPs = text.match(ipRegex) || [];
             const rawURLs = text.match(urlRegex) || [];
             const rawEmails = text.match(emailRegex) || [];
+            const rawSHA512 = text.match(sha512Regex) || [];
             const rawSHA256 = text.match(sha256Regex) || [];
             const rawSHA1 = text.match(sha1Regex) || [];
             const rawMD5 = text.match(md5Regex) || [];
@@ -1439,22 +1683,54 @@
             let urls = Object.keys(urlCounts);
             let emails = Object.keys(emailCounts);
 
-            // Hash deduplication: longest first
-            let sha256 = [...new Set(rawSHA256)];
+            // Hash deduplication: longest first (SHA-512 > SHA-256 > SHA-1 > MD5)
+            let sha512 = [...new Set(rawSHA512)];
+            const sha512Set = new Set(sha512);
+            let sha256 = [...new Set(rawSHA256)].filter(h =>
+                !sha512Set.has(h) && !sha512.some(s => s.includes(h))
+            );
             const sha256Set = new Set(sha256);
-            let sha1 = [...new Set(rawSHA1)].filter(h => !sha256Set.has(h) && !sha256.some(s => s.includes(h)));
+            let sha1 = [...new Set(rawSHA1)].filter(h =>
+                !sha512Set.has(h) && !sha256Set.has(h) &&
+                !sha512.some(s => s.includes(h)) && !sha256.some(s => s.includes(h))
+            );
             const sha1Set = new Set(sha1);
             let md5 = [...new Set(rawMD5)].filter(h =>
-                !sha256Set.has(h) && !sha1Set.has(h) &&
-                !sha256.some(s => s.includes(h)) && !sha1.some(s => s.includes(h))
+                !sha512Set.has(h) && !sha256Set.has(h) && !sha1Set.has(h) &&
+                !sha512.some(s => s.includes(h)) && !sha256.some(s => s.includes(h)) && !sha1.some(s => s.includes(h))
             );
 
             // Count hashes per type (from raw arrays, filtered to deduped values)
-            const md5Set = new Set(md5);
-            const md5Counts = countOccurrences(rawMD5.filter(h => md5Set.has(h)));
+            const sha512FilterSet = new Set(sha512);
+            const sha512Counts = countOccurrences(rawSHA512.filter(h => sha512FilterSet.has(h)));
+            const sha256Counts = countOccurrences(rawSHA256.filter(h => sha256Set.has(h)));
             const sha1FilterSet = new Set(sha1);
             const sha1Counts = countOccurrences(rawSHA1.filter(h => sha1FilterSet.has(h)));
-            const sha256Counts = countOccurrences(rawSHA256.filter(h => sha256Set.has(h)));
+            const md5Set = new Set(md5);
+            const md5Counts = countOccurrences(rawMD5.filter(h => md5Set.has(h)));
+
+            // CVE identifiers — normalize to uppercase
+            const rawCVEs = (text.match(cveRegex) || []).map(c => c.toUpperCase());
+            const cveCounts = countOccurrences(rawCVEs);
+            let cves = [...new Set(rawCVEs)].sort();
+
+            // MITRE ATT&CK technique IDs — uppercase T/TA IDs
+            const rawAttack = (text.match(attackTechRegex) || []).map(t => t.toUpperCase());
+            const attackCounts = countOccurrences(rawAttack);
+            let attackTechniques = [...new Set(rawAttack)].sort();
+
+            // CIDR notation (IPv4 only, prefix 0-32 validated by regex)
+            const rawCIDR = text.match(cidrIPv4Regex) || [];
+            const cidrCounts = countOccurrences(rawCIDR);
+            let cidr = [...new Set(rawCIDR)].sort();
+
+            // IPv6 addresses — filter MAC addresses as false positives
+            const macRegex = /^[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}$/i;
+            const rawIPv6 = (text.match(ipv6Regex) || []).filter(v =>
+                (v.match(/:/g) || []).length >= 2 && !macRegex.test(v)
+            );
+            const ipv6Counts = countOccurrences(rawIPv6);
+            let ipv6 = [...new Set(rawIPv6)].map(v => v.toLowerCase()).sort();
 
             // Domain extraction: filter out IPs, numeric-looking, and file names
             const fileExtensions = new Set([
@@ -1595,7 +1871,7 @@
             urls.sort((a, b) => extractPrimaryDomain(a).localeCompare(extractPrimaryDomain(b)));
             domains.sort((a, b) => extractPrimaryDomain(a).localeCompare(extractPrimaryDomain(b)));
             emails.sort((a, b) => a.localeCompare(b));
-            md5.sort(); sha1.sort(); sha256.sort();
+            md5.sort(); sha1.sort(); sha256.sort(); sha512.sort();
 
             // Sort files
             files.sort((a, b) => a.localeCompare(b));
@@ -1603,13 +1879,18 @@
             // Store counts
             extractedCounts = {
                 ips: ipCounts,
+                ipv6: ipv6Counts,
+                cidr: cidrCounts,
                 urls: urlCounts,
                 domains: domainCounts,
                 files: fileCounts,
                 emails: emailCounts,
                 md5: md5Counts,
                 sha1: sha1Counts,
-                sha256: sha256Counts
+                sha256: sha256Counts,
+                sha512: sha512Counts,
+                cves: cveCounts,
+                attackTechniques: attackCounts
             };
 
             if (defang) {
@@ -1619,17 +1900,17 @@
                 emails = emails.map(defangEmail);
             }
 
-            extractedData = { ips, urls, domains, files, emails, md5, sha1, sha256 };
+            extractedData = { ips, ipv6, cidr, urls, domains, files, emails, md5, sha1, sha256, sha512, cves, attackTechniques };
 
             // Render with checkboxes and show/hide sections
-            const categories = ['ips', 'urls', 'domains', 'files', 'emails', 'md5', 'sha1', 'sha256'];
+            const categories = ['ips', 'ipv6', 'cidr', 'urls', 'domains', 'files', 'emails', 'md5', 'sha1', 'sha256', 'sha512', 'cves', 'attackTechniques'];
             categories.forEach(cat => {
                 const items = extractedData[cat];
                 renderIOCList(cat, items, cat);
                 document.getElementById('section_' + cat).style.display = items.length > 0 ? 'block' : 'none';
             });
 
-            const totalIOCs = ips.length + urls.length + domains.length + files.length + emails.length + md5.length + sha1.length + sha256.length;
+            const totalIOCs = ips.length + ipv6.length + cidr.length + urls.length + domains.length + files.length + emails.length + md5.length + sha1.length + sha256.length + sha512.length + cves.length + attackTechniques.length;
             document.getElementById('selectAllBar').style.display = totalIOCs > 0 ? 'block' : 'none';
             document.getElementById('selectAll').checked = true;
             document.querySelectorAll('.section-toggle').forEach(cb => cb.checked = true);
@@ -1662,12 +1943,19 @@
             const md5Regex = /\b[a-fA-F0-9]{32}\b/g;
             const sha1Regex = /\b[a-fA-F0-9]{40}\b/g;
             const sha256Regex = /\b[a-fA-F0-9]{64}\b/g;
+            const sha512SrcRegex = /\b[a-fA-F0-9]{128}\b/g;
+            const cveSrcRegex = /\bCVE-(?:19[0-9]{2}|20[0-2][0-9])-\d{4,}\b/gi;
+            const attackSrcRegex = /\b(?:TA\d{4}|T\d{4}(?:\.\d{3})?)\b/g;
+            const cidrSrcRegex = /\b(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\.){3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\/(?:3[0-2]|[12]?[0-9])\b/g;
+            const ipv6SrcRegex = /(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|:(?::[0-9a-fA-F]{1,4}){1,7}|::(?:ffff(?::0{1,4})?:)?(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])(?:\.(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])){3}|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])(?:\.(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])){3})/g;
 
             // Find all matches with positions
             const matches = [];
             let m;
 
-            for (const regex of [urlRegex, emailRegex, ipRegex, sha256Regex, sha1Regex, md5Regex, domainRegex]) {
+            // Order matters: more specific patterns before general ones to prevent substring stealing
+            // sha512 before sha256, cidr before ipv4, cve before domain
+            for (const regex of [urlRegex, emailRegex, sha512SrcRegex, sha256Regex, sha1Regex, md5Regex, cveSrcRegex, attackSrcRegex, cidrSrcRegex, ipRegex, ipv6SrcRegex, domainRegex]) {
                 regex.lastIndex = 0;
                 while ((m = regex.exec(text)) !== null) {
                     matches.push({ start: m.index, end: m.index + m[0].length, value: m[0] });
@@ -2061,7 +2349,7 @@
 
         // ─── Get selected IOCs ──────────────────────────────────────────────
         function getSelectedIOCs() {
-            const selected = { ips: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [] };
+            const selected = { ips: [], ipv6: [], cidr: [], urls: [], domains: [], files: [], emails: [], md5: [], sha1: [], sha256: [], sha512: [], cves: [], attackTechniques: [] };
             document.querySelectorAll('.ioc-item input[type="checkbox"]:checked').forEach(cb => {
                 const cat = cb.dataset.category;
                 const val = cb.dataset.value;
@@ -2091,6 +2379,8 @@
             const data = getSelectedIOCs();
             let csv = "Type,Value\n";
             data.ips.forEach(v => csv += `IP,"${csvEscape(v)}"\n`);
+            data.ipv6.forEach(v => csv += `IPv6,"${csvEscape(v)}"\n`);
+            data.cidr.forEach(v => csv += `CIDR,"${csvEscape(v)}"\n`);
             data.urls.forEach(v => csv += `URL,"${csvEscape(v)}"\n`);
             data.domains.forEach(v => csv += `Domain,"${csvEscape(v)}"\n`);
             data.files.forEach(v => csv += `File,"${csvEscape(v)}"\n`);
@@ -2098,6 +2388,9 @@
             data.md5.forEach(v => csv += `MD5,"${csvEscape(v)}"\n`);
             data.sha1.forEach(v => csv += `SHA-1,"${csvEscape(v)}"\n`);
             data.sha256.forEach(v => csv += `SHA-256,"${csvEscape(v)}"\n`);
+            data.sha512.forEach(v => csv += `SHA-512,"${csvEscape(v)}"\n`);
+            data.cves.forEach(v => csv += `CVE,"${csvEscape(v)}"\n`);
+            data.attackTechniques.forEach(v => csv += `ATT&CK,"${csvEscape(v)}"\n`);
             downloadFile(csv, 'extracted.csv', 'text/csv');
         }
 
@@ -2140,6 +2433,8 @@
             const data = getSelectedIOCs();
             const allItems = [];
             data.ips.forEach(v => allItems.push({ cat: 'ip', value: v, stixType: 'ipv4-addr' }));
+            data.ipv6.forEach(v => allItems.push({ cat: 'ipv6', value: v, stixType: 'ipv6-addr' }));
+            data.cidr.forEach(v => allItems.push({ cat: 'cidr', value: v, stixType: 'ipv4-addr' }));
             data.urls.forEach(v => allItems.push({ cat: 'url', value: v, stixType: 'url' }));
             data.domains.forEach(v => allItems.push({ cat: 'domain', value: v, stixType: 'domain-name' }));
             data.files.forEach(v => allItems.push({ cat: 'file', value: v, stixType: 'file', fileName: v }));
@@ -2147,6 +2442,9 @@
             data.md5.forEach(v => allItems.push({ cat: 'md5', value: v, stixType: 'file', hashType: 'MD5' }));
             data.sha1.forEach(v => allItems.push({ cat: 'sha1', value: v, stixType: 'file', hashType: 'SHA-1' }));
             data.sha256.forEach(v => allItems.push({ cat: 'sha256', value: v, stixType: 'file', hashType: 'SHA-256' }));
+            data.sha512.forEach(v => allItems.push({ cat: 'sha512', value: v, stixType: 'file', hashType: 'SHA-512' }));
+            data.cves.forEach(v => allItems.push({ cat: 'cve', value: v, stixType: 'vulnerability' }));
+            data.attackTechniques.forEach(v => allItems.push({ cat: 'attack', value: v, stixType: 'attack-pattern' }));
 
             window._stixItems = allItems;
 
@@ -2253,9 +2551,30 @@
                 let sco;
                 switch (item.stixType) {
                     case 'ipv4-addr': sco = { type: 'ipv4-addr', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'ipv6-addr': sco = { type: 'ipv6-addr', spec_version: '2.1', id: scoId, value: item.value }; break;
                     case 'url': sco = { type: 'url', spec_version: '2.1', id: scoId, value: item.value }; break;
                     case 'domain-name': sco = { type: 'domain-name', spec_version: '2.1', id: scoId, value: item.value }; break;
                     case 'email-addr': sco = { type: 'email-addr', spec_version: '2.1', id: scoId, value: item.value }; break;
+                    case 'vulnerability':
+                        sco = {
+                            type: 'vulnerability', spec_version: '2.1', id: scoId,
+                            created: now, modified: now, name: item.value,
+                            external_references: [{
+                                source_name: 'cve', external_id: item.value,
+                                url: `https://nvd.nist.gov/vuln/detail/${item.value}`
+                            }]
+                        };
+                        break;
+                    case 'attack-pattern':
+                        sco = {
+                            type: 'attack-pattern', spec_version: '2.1', id: scoId,
+                            created: now, modified: now, name: item.value,
+                            external_references: [{
+                                source_name: 'mitre-attack', external_id: item.value,
+                                url: `https://attack.mitre.org/techniques/${item.value.replace('.', '/')}/`
+                            }]
+                        };
+                        break;
                     case 'file':
                         if (item.hashType) {
                             sco = buildFileHash(scoId, item.value, item.hashType);
@@ -2357,9 +2676,12 @@
             const val = item.value.replace(/'/g, "\\'");
             switch (item.stixType) {
                 case 'ipv4-addr': return `[ipv4-addr:value = '${val}']`;
+                case 'ipv6-addr': return `[ipv6-addr:value = '${val}']`;
                 case 'url': return `[url:value = '${val}']`;
                 case 'domain-name': return `[domain-name:value = '${val}']`;
                 case 'email-addr': return `[email-addr:value = '${val}']`;
+                case 'vulnerability': return `[vulnerability:name = '${val}']`;
+                case 'attack-pattern': return `[attack-pattern:name = '${val}']`;
                 case 'file':
                     if (item.hashType) return `[file:hashes.'${item.hashType}' = '${val}']`;
                     if (item.fileName) return `[file:name = '${val}']`;
@@ -2375,13 +2697,16 @@
 
             // Collect all IOCs
             const allIPs = data.ips || [];
+            const allIPv6 = data.ipv6 || [];
             const allDomains = data.domains || [];
             const allURLs = data.urls || [];
-            const allHashes = [...(data.md5 || []), ...(data.sha1 || []), ...(data.sha256 || [])];
+            const allHashes = [...(data.md5 || []), ...(data.sha1 || []), ...(data.sha256 || []), ...(data.sha512 || [])];
             const allEmails = data.emails || [];
+            const allCVEs = data.cves || [];
+            const allAttack = data.attackTechniques || [];
 
-            if (allIPs.length === 0 && allDomains.length === 0 && allURLs.length === 0 &&
-                allHashes.length === 0 && allEmails.length === 0) {
+            if (allIPs.length === 0 && allIPv6.length === 0 && allDomains.length === 0 && allURLs.length === 0 &&
+                allHashes.length === 0 && allEmails.length === 0 && allCVEs.length === 0 && allAttack.length === 0) {
                 content.innerHTML = `<p style="color: var(--text-secondary);"><em>${escapeHtml(t('siemNoIOCs'))}</em></p>`;
                 document.getElementById('siemModal').style.display = 'block';
                 return;
@@ -2423,6 +2748,36 @@ DeviceFileEvents
 <button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
             }
 
+            if (allIPv6.length > 0) {
+                const ipv6Query = allIPv6.map(ip => `"${ip}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// IPv6 Addresses
+let MaliciousIPv6 = dynamic([${ipv6Query}]);
+CommonSecurityLog
+| where DestinationIP in (MaliciousIPv6) or SourceIP in (MaliciousIPv6)
+| project TimeGenerated, SourceIP, DestinationIP, DeviceAction, Message</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allCVEs.length > 0) {
+                const cveQuery = allCVEs.map(c => `"${c}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// CVE Identifiers
+let TargetCVEs = dynamic([${cveQuery}]);
+SecurityEvent
+| where EventData has_any (TargetCVEs)
+| project TimeGenerated, Computer, EventID, EventData</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allAttack.length > 0) {
+                const attackQuery = allAttack.map(a => `"${a}"`).join(', ');
+                html += `<div style="position:relative;"><div class="siem-query-box">// MITRE ATT&CK Techniques
+let TargetTechniques = dynamic([${attackQuery}]);
+SecurityAlert
+| where Techniques has_any (TargetTechniques) or Description has_any (TargetTechniques)
+| project TimeGenerated, AlertName, Techniques, Description</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
             html += `</div>`;
 
             // Splunk (SPL)
@@ -2453,6 +2808,27 @@ DeviceFileEvents
 <button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
             }
 
+            if (allIPv6.length > 0) {
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* (src_ip="${allIPv6[0]}"${allIPv6.length > 1 ? ' OR src_ip=' + allIPv6.slice(1).map(ip => `"${ip}"`).join(' OR src_ip=') : ''} OR dest_ip="${allIPv6[0]}"${allIPv6.length > 1 ? ' OR dest_ip=' + allIPv6.slice(1).map(ip => `"${ip}"`).join(' OR dest_ip=') : ''})
+| stats count by _time, src_ip, dest_ip, action
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allCVEs.length > 0) {
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* (cve_id="${allCVEs[0]}"${allCVEs.length > 1 ? ' OR cve_id=' + allCVEs.slice(1).map(c => `"${c}"`).join(' OR cve_id=') : ''})
+| stats count by _time, host, cve_id, severity
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allAttack.length > 0) {
+                html += `<div style="position:relative;"><div class="siem-query-box">index=* (mitre_technique="${allAttack[0]}"${allAttack.length > 1 ? ' OR mitre_technique=' + allAttack.slice(1).map(a => `"${a}"`).join(' OR mitre_technique=') : ''})
+| stats count by _time, host, mitre_technique, alert_name
+| sort -_time</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
             html += `</div>`;
 
             // Elastic Security (ELK)
@@ -2474,6 +2850,24 @@ DeviceFileEvents
             if (allHashes.length > 0) {
                 const hashQuery = allHashes.map(h => `"${h.toLowerCase()}"`).join(' OR ');
                 html += `<div style="position:relative;"><div class="siem-query-box">file.hash.md5:(${hashQuery}) OR file.hash.sha1:(${hashQuery}) OR file.hash.sha256:(${hashQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allIPv6.length > 0) {
+                const ipv6Query = allIPv6.map(ip => `"${ip}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">source.ip:(${ipv6Query}) OR destination.ip:(${ipv6Query})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allCVEs.length > 0) {
+                const cveQuery = allCVEs.map(c => `"${c}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">vulnerability.id:(${cveQuery}) OR event.description:(${cveQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allAttack.length > 0) {
+                const attackQuery = allAttack.map(a => `"${a}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">threat.technique.id:(${attackQuery}) OR threat.tactic.id:(${attackQuery})</div>
 <button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
             }
 
@@ -2518,8 +2912,8 @@ DeviceFileEvents
         <div class="doc-section">
             <h3>${isNL ? 'Overzicht' : 'Overview'}</h3>
             <p>${isNL
-                    ? '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extraheert Indicators of Compromise (IOCs) uit platte tekst. Het herkent IP-adressen, URLs, domeinnamen, bestandsnamen (bijv. malware.exe, payload.dll), e-mailadressen en cryptografische hashes (MD5, SHA-1, SHA-256). Domeinnamen worden gevalideerd met de offici\u00EBle IANA TLD-lijst om valse positieven te voorkomen. Bestandsnamen worden automatisch gescheiden van domeinnamen. Geextraheerde IOCs kunnen worden ge-defanged, bewerkt, verwijderd, geselecteerd en geexporteerd naar CSV, JSON of STIX 2.1 formaat.'
-                    : '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extracts Indicators of Compromise (IOCs) from plain text. It recognizes IP addresses, URLs, domain names, file names (e.g. malware.exe, payload.dll), email addresses, and cryptographic hashes (MD5, SHA-1, SHA-256). Domain names are validated against the official IANA TLD list to reduce false positives. File names are automatically separated from domain names. Extracted IOCs can be defanged, edited, deleted, individually selected, and exported to CSV, JSON, or STIX 2.1 format.'
+                    ? '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extraheert Indicators of Compromise (IOCs) uit platte tekst. Het herkent IPv4- en IPv6-adressen, CIDR-bereiken, URLs, domeinnamen, bestandsnamen (bijv. malware.exe, payload.dll), e-mailadressen, cryptografische hashes (MD5, SHA-1, SHA-256, SHA-512), CVE-kwetsbaarheids-IDs en MITRE ATT&CK techniek-IDs. Domeinnamen worden gevalideerd met de offici\u00EBle IANA TLD-lijst om valse positieven te voorkomen. Bestandsnamen worden automatisch gescheiden van domeinnamen. Geextraheerde IOCs kunnen worden ge-defanged, bewerkt, verwijderd, geselecteerd en geexporteerd naar CSV, JSON of STIX 2.1 formaat.'
+                    : '<strong>YOINK!</strong> (<em>Your Observables Instantly Nabbed & Kategorized</em>) extracts Indicators of Compromise (IOCs) from plain text. It recognizes IPv4 and IPv6 addresses, CIDR ranges, URLs, domain names, file names (e.g. malware.exe, payload.dll), email addresses, cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512), CVE vulnerability IDs, and MITRE ATT&CK technique IDs. Domain names are validated against the official IANA TLD list to reduce false positives. File names are automatically separated from domain names. Extracted IOCs can be defanged, edited, deleted, individually selected, and exported to CSV, JSON, or STIX 2.1 format.'
                 }</p>
         </div>
 
@@ -2643,6 +3037,50 @@ DeviceFileEvents
             <p><strong>STIX 2.1</strong> ${isNL
                     ? '— Structured Threat Information Expression bundel. Bevat Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs met STIX-patronen, optionele Relationship SROs, een Report SDO, en TLP-markeringen. U kunt metadata invullen, relaties defini\u00EBren, en handmatig tekst invoeren als bron of doel van relaties in het STIX-exportvenster.'
                     : '— Structured Threat Information Expression bundle. Contains Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs with STIX patterns, optional Relationship SROs, a Report SDO, and TLP markings. You can fill in metadata, define relationships, and manually enter text as source or target of relationships in the STIX export window.'
+                }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Nieuwe IOC-typen (v1.0)' : 'New IOC types (v1.0)'}</h3>
+            <p>${isNL
+                    ? 'Naast de basistypen herkent YOINK! nu ook de volgende indicators:'
+                    : 'In addition to the core types, YOINK! now also recognizes the following indicators:'
+                }</p>
+            <table class="doc-table">
+                <tr>
+                    <th>${isNL ? 'Type' : 'Type'}</th>
+                    <th>${isNL ? 'Patroon' : 'Pattern'}</th>
+                    <th>${isNL ? 'Voorbeeld' : 'Example'}</th>
+                </tr>
+                <tr>
+                    <td>IPv6</td>
+                    <td>${isNL ? 'Volledige en gecomprimeerde IPv6-adressen' : 'Full and compressed IPv6 addresses'}</td>
+                    <td><code>2001:db8::1</code>, <code>::1</code></td>
+                </tr>
+                <tr>
+                    <td>CIDR</td>
+                    <td>${isNL ? 'IPv4-netwerkbereiken met prefix 0–32' : 'IPv4 network ranges with prefix 0–32'}</td>
+                    <td><code>192.168.1.0/24</code>, <code>10.0.0.0/8</code></td>
+                </tr>
+                <tr>
+                    <td>SHA-512</td>
+                    <td>${isNL ? '128-teken hexadecimale hash' : '128-character hexadecimal hash'}</td>
+                    <td><code>cf83e135...3e</code> (128 chars)</td>
+                </tr>
+                <tr>
+                    <td>CVE</td>
+                    <td>${isNL ? 'CVE-JJJJ-NNNN(N+) formaat, 1999–2029' : 'CVE-YYYY-NNNN(N+) format, years 1999–2029'}</td>
+                    <td><code>CVE-2024-12345</code>, <code>CVE-2021-44228</code></td>
+                </tr>
+                <tr>
+                    <td>ATT&amp;CK</td>
+                    <td>${isNL ? 'MITRE ATT&CK techniek- en tactiek-IDs' : 'MITRE ATT&CK technique and tactic IDs'}</td>
+                    <td><code>T1059.001</code>, <code>T1566</code>, <code>TA0001</code></td>
+                </tr>
+            </table>
+            <p>${isNL
+                    ? '<strong>Notities:</strong> CVE-IDs worden genormaliseerd naar hoofdletters. SHA-512 wordt automatisch gedupliceerdegededupliceerd met bestaande MD5/SHA-1/SHA-256 hashes (langste hash heeft prioriteit). IPv6-MAC-adressen worden gefilterd als valse positieven. STIX 2.1 export ondersteunt <code>vulnerability</code>, <code>attack-pattern</code> en <code>ipv6-addr</code> objecten. SIEM-queries voor Sentinel, Splunk en Elastic omvatten nu ook IPv6, CVE en ATT&CK velden.'
+                    : '<strong>Notes:</strong> CVE IDs are normalized to uppercase. SHA-512 is automatically deduplicated against existing MD5/SHA-1/SHA-256 hashes (longest hash takes priority). IPv6 MAC addresses are filtered as false positives. STIX 2.1 export supports <code>vulnerability</code>, <code>attack-pattern</code> and <code>ipv6-addr</code> objects. SIEM queries for Sentinel, Splunk and Elastic now include IPv6, CVE and ATT&CK fields.'
                 }</p>
         </div>
 

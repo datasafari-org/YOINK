@@ -1,4 +1,4 @@
-# YOINK!
+# YOINK! v1.1
 
 ### Your Observables Instantly Nabbed & Kategorized
 
@@ -28,7 +28,7 @@ Paste your text. Hit the YOINK! button. Done.
 
 | Feature | Description |
 |---------|-------------|
-| **8 IOC types** | IPv4, URL, domain, email, file name, MD5, SHA-1, SHA-256 |
+| **13 IOC types** | IPv4, IPv6, CIDR, URL, domain, email, file name, MD5, SHA-1, SHA-256, SHA-512, CVE IDs, MITRE ATT&CK IDs |
 | **IANA TLD validation** | Domains validated against the full IANA TLD list to eliminate false positives |
 | **Auto-refang** | Defanged input (`hxxps`, `[.]`, `(dot)`, `[at]`, etc.) cleaned automatically |
 | **Defang output** | One-click toggle to defang all extracted indicators for safe sharing |
@@ -37,7 +37,8 @@ Paste your text. Hit the YOINK! button. Done.
 | **Move between categories** | Long-press a domain or file IOC to reclassify it |
 | **3 export formats** | CSV, JSON, STIX 2.1 |
 | **STIX 2.1 bundles** | Full bundle with Identity, SCOs, Indicators, Relationships, Report, and TLP markings |
-| **Dark / Light theme** | Respects your preference, toggle anytime |
+| **SIEM queries** | Auto-generated wildcard queries for Microsoft Sentinel (KQL), Splunk (SPL), and Elastic (Lucene) |
+| **Dark / Light theme** | PRISM-inspired design system, toggle anytime |
 | **Bilingual** | English and Dutch, switchable and remembered |
 
 ---
@@ -75,8 +76,8 @@ Each indicator comes with copy, edit, and delete actions. Domain and file indica
 ## Quick start
 
 ```
-git clone https://github.com/YOUR_USERNAME/yoink.git
-open yoink/yoink.html
+git clone https://github.com/datasafari-org/YOINK.git
+open YOINK/yoink.html
 ```
 
 That's it. Open the file in any browser. No build step, no `npm install`, no backend.
@@ -87,7 +88,9 @@ That's it. Open the file in any browser. No build step, no `npm install`, no bac
 
 | Type | Examples | Detection method |
 |------|----------|-----------------|
-| **IPv4** | `192.168.1.1`, `10.0.0.1` | Regex with octet validation |
+| **IPv4** | `192.168.1.1`, `10.0.0.1` | Regex with per-octet range validation (0–255) |
+| **IPv6** | `2001:db8::1`, `fe80::1` | Full and compressed notation, MAC false-positive filtered |
+| **CIDR** | `10.0.0.0/8`, `192.168.0.0/24` | IPv4 CIDR with prefix validation (0–32) |
 | **URLs** | `https://evil.com/payload`, `ftp://drop.site/file` | Protocol-based matching (HTTP, HTTPS, FTP, FTPS) |
 | **Domains** | `evil.com`, `c2.malware.network` | Regex + IANA TLD validation |
 | **Files** | `malware.exe`, `dropper.dll`, `config.aspx` | Extension-based classification |
@@ -95,8 +98,13 @@ That's it. Open the file in any browser. No build step, no `npm install`, no bac
 | **MD5** | `d41d8cd98f00b204e9800998ecf8427e` | 32-char hex string |
 | **SHA-1** | `da39a3ee5e6b4b0d3255bfef95601890afd80709` | 40-char hex string |
 | **SHA-256** | `e3b0c44298fc1c149afbf4c8996fb924...` | 64-char hex string |
+| **SHA-512** | `cf83e1357eefb8bdf15...` | 128-char hex string |
+| **CVE IDs** | `CVE-2024-12345` | CVE-YYYY-NNNNN pattern (1999–2029) |
+| **MITRE ATT&CK** | `T1059.001`, `T1566`, `TA0002` | Technique (`T####`/`T####.###`) and tactic (`TA####`) IDs |
 
-Hash deduplication prevents substring false positives (e.g., an MD5 that is a prefix of a SHA-256 is not counted twice).
+### Hash deduplication
+
+Hashes are deduplicated by length priority: **SHA-512 → SHA-256 → SHA-1 → MD5**. A shorter hash that appears as a substring inside a longer one is suppressed, preventing double-counting across categories.
 
 ---
 
@@ -156,13 +164,18 @@ Structured object with arrays per IOC category. Ready for scripting and automati
 ```json
 {
   "ips": ["192.168.1.1"],
+  "ipv6": ["2001:db8::1"],
+  "cidr": ["10.0.0.0/8"],
   "urls": ["https://evil.com/payload"],
   "domains": ["evil.com"],
   "emails": ["admin@evil.com"],
   "files": ["malware.exe"],
   "md5": ["d41d8cd98f00b204e9800998ecf8427e"],
   "sha1": [],
-  "sha256": []
+  "sha256": [],
+  "sha512": [],
+  "cves": ["CVE-2024-12345"],
+  "attackTechniques": ["T1059.001", "TA0002"]
 }
 ```
 
@@ -171,13 +184,26 @@ Structured object with arrays per IOC category. Ready for scripting and automati
 Full Structured Threat Information Expression bundle with a configuration modal:
 
 - **Identity SDO** — your organization as the creator
-- **SCOs** — `ipv4-addr`, `url`, `domain-name`, `email-addr`, `file` (with hash objects)
+- **SCOs** — `ipv4-addr`, `ipv6-addr`, `url`, `domain-name`, `email-addr`, `file` (with hash objects)
+- **SDOs** — `vulnerability` (CVEs), `attack-pattern` (ATT&CK techniques) with external references to NVD and MITRE
 - **Indicator SDOs** — STIX patterns wrapping each observable
-- **Relationship SROs** — define relationships between any pair of IOCs (supports manual text entry for external references)
+- **Relationship SROs** — define relationships between any pair of IOCs
 - **Report SDO** — ties all indicators into a single report
 - **TLP markings** — CLEAR, GREEN, AMBER, AMBER+STRICT, RED (standard STIX 2.1 UUIDs)
 
 Available relationship types: `related-to`, `indicates`, `uses`, `targets`, `attributed-to`, `mitigates`, `derived-from`, `based-on`, `communicates-with`, `consists-of`, `controls`, `delivers`, `drops`, `exploits`, `hosts`, `located-at`, `originates-from`, `resolves-to`
+
+### SIEM wildcard queries
+
+The **SIEM Queries** button generates ready-to-paste wildcard search queries for all three major platforms:
+
+| Platform | Language | Use case |
+|----------|----------|----------|
+| **Microsoft Sentinel** | KQL | Azure Monitor / Log Analytics |
+| **Splunk** | SPL | Splunk Enterprise / Cloud |
+| **Elastic / ELK** | Lucene | Elasticsearch / OpenSearch |
+
+Queries are generated per IOC type (IPs, domains, hashes, URLs, IPv6, CVEs, ATT&CK techniques) with a one-click **Copy** button per query block.
 
 ---
 
@@ -195,13 +221,17 @@ For **domains** and **files** only: **long-press** (hold for 500ms) on any indic
 
 ---
 
-## Theming
+## Design
 
-Dark and light themes with a toggle in the top-right corner. Your preference is saved to `localStorage`.
+YOINK! v1.1 adopts the **PRISM design system** — a neutral Tailwind gray-blue palette with consistent card-based layout, box shadows, and a unified `rem`-based border-radius scale. Both themes are fully updated:
 
-| Dark | Light |
-|------|-------|
-| ![Dark theme](screenshots/yoink.png) | ![Light theme](screenshots/yoink_l.png) |
+| Token | Dark | Light |
+|-------|------|-------|
+| Background primary | `#1f2937` | `#ffffff` |
+| Background secondary | `#111827` | `#f3f4f6` |
+| Accent | `#60a5fa` (blue-400) | `#3b82f6` (blue-500) |
+
+The design is CSS-only with zero additional dependencies.
 
 ---
 
@@ -210,7 +240,7 @@ Dark and light themes with a toggle in the top-right corner. Your preference is 
 - Any modern browser (Chrome, Firefox, Safari, Edge)
 - Zero external dependencies
 - Fully offline capable
-- Single HTML file (~125 KB)
+- Single HTML file (~160 KB)
 
 ---
 
@@ -218,8 +248,8 @@ Dark and light themes with a toggle in the top-right corner. Your preference is 
 
 - **Incident response** — quickly yoink IOCs from incident reports, phishing emails, or sandbox output
 - **Threat intelligence** — pull indicators from advisories and export as STIX 2.1 for your TIP
-- **SOC operations** — defang IOCs before pasting into tickets, chat, or email
-- **Malware analysis** — extract hashes, C2 domains, and drop URLs from analysis notes
+- **SOC operations** — defang IOCs before pasting into tickets, chat, or email; generate SIEM hunt queries in one click
+- **Malware analysis** — extract hashes, C2 domains, drop URLs, CVEs, and ATT&CK technique IDs from analysis notes
 - **CTF / training** — teach IOC handling and STIX formatting
 
 ---
@@ -234,14 +264,31 @@ Created by **Mike Meerkat** ([Datasafari.org](https://datasafari.org)) and **Cla
 
 Contributions are welcome. The entire tool is a single HTML file — no build system, no framework, no transpilation. Fork it, open it in your editor, and start hacking.
 
-Some ideas for contributions:
+See [FUTURE_FEATURES.md](FUTURE_FEATURES.md) for the full backlog of ideas and enhancement requests.
 
-- [ ] IPv6 support
-- [ ] CIDR notation detection
-- [ ] CVE identifier extraction
-- [ ] MITRE ATT&CK technique ID extraction
-- [ ] Additional language support
-- [ ] Browser extension wrapper
+---
+
+## Changelog
+
+### v1.1 — 2026-02-17
+- **PRISM design system** — new neutral gray-blue palette, card-based layout, box shadows, unified `rem` border-radius scale across all components
+- **System font stack** — replaced `Arial` with `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto` for a crisper look on all platforms
+- **New component classes** — `.badge`, `.status-dot`, `.spinner`, `.card`, `.btn-icon`, `.btn-link` added for future use
+- **Refined all UI components** — top bar, IOC section cards, modals, SIEM query boxes, doc tables, textarea, source display all updated to PRISM style
+
+### v1.0 — 2026-02-04
+- **5 new IOC types** — IPv6 addresses, CIDR ranges, SHA-512 hashes, CVE identifiers, MITRE ATT&CK technique and tactic IDs
+- **STIX 2.1 extended** — `vulnerability`, `attack-pattern`, and `ipv6-addr` SCO/SDO types with external references to NVD and MITRE ATT&CK
+- **SIEM queries extended** — IPv6, CVE, and ATT&CK blocks added to all three platforms (Sentinel, Splunk, Elastic)
+- **Hash deduplication chain** — SHA-512 → SHA-256 → SHA-1 → MD5 priority ordering
+- **IPv6 false-positive filter** — MAC address patterns excluded from IPv6 results
+
+### v0.7-beta — initial release
+- IPv4, URL, domain, email, file, MD5, SHA-1, SHA-256 extraction
+- Auto-refang, defang output, source viewer, inline editing
+- CSV, JSON, STIX 2.1 export
+- Dark/Light theme, EN/NL bilingual support
+- SIEM queries (Sentinel, Splunk, Elastic)
 
 ---
 
