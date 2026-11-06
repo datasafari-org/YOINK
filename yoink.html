@@ -696,6 +696,50 @@
             animation: ioc-flash 0.5s ease-out;
         }
 
+        /* ─── Private IP badge ────────────────────────────────────────────── */
+        .ip-private-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 6px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-light);
+            font-family: var(--font-sans);
+            vertical-align: middle;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* ─── IOC filter input ────────────────────────────────────────────── */
+        .ioc-filter-input {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 0.25rem;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            box-sizing: border-box;
+        }
+
+        .ioc-filter-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-subtle);
+        }
+
+        /* ─── Textarea drag-over highlight ───────────────────────────────── */
+        textarea.drag-over {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-subtle);
+        }
+
         /* ─── Modals ──────────────────────────────────────────────────────── */
         .modal-backdrop {
             position: fixed;
@@ -1077,7 +1121,7 @@
     <!-- Top bar: title + controls -->
     <div class="top-bar">
         <div style="display:flex;flex-direction:column;align-items:center;">
-            <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v1.1</sup></h1>
+            <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v1.3</sup></h1>
             <span data-i18n="subtitle" style="font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;margin-top:-2px;">Your Observables Instantly Nabbed &amp; Kategorized</span>
         </div>
         <div class="top-bar-controls">
@@ -1124,8 +1168,10 @@
     </div>
 
     <div class="select-all-bar" id="selectAllBar" style="display:none;">
-        <label><input type="checkbox" id="selectAll" checked onchange="toggleAllGlobal(this.checked)"> <span
-                data-i18n="selectAll">Selecteer / Deselecteer alle IOCs</span></label>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <label style="white-space:nowrap;"><input type="checkbox" id="selectAll" checked onchange="toggleAllGlobal(this.checked)"> <span data-i18n="selectAll">Selecteer / Deselecteer alle IOCs</span></label>
+            <input type="text" id="iocFilter" class="ioc-filter-input" data-i18n-placeholder="filterPlaceholder" placeholder="Filter IOCs..." oninput="filterIOCs(this.value)">
+        </div>
     </div>
 
     <div class="output" id="outputContainer">
@@ -1254,7 +1300,7 @@
         <span data-i18n="githubText">Project on GitHub:</span> <a href="https://github.com/datasafari-org/YOINK/blob/main/yoink.html"
             target="_blank">datasafari-org/YOINK</a>
         <span style="margin: 0 10px;">|</span>
-        <span style="color: var(--text-secondary);">v1.1</span>
+        <span style="color: var(--text-secondary);">v1.3</span>
     </div>
 
     <!-- STIX 2.1 Modal -->
@@ -1341,9 +1387,12 @@
         function initTheme() {
             const saved = localStorage.getItem('yoink-theme');
             if (saved) {
-                document.documentElement.setAttribute('data-theme', saved);
+                if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+                // 'dark': no attribute needed, :root variables apply
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                // No saved preference — follow system
+                document.documentElement.setAttribute('data-theme', 'light');
             }
-            // Default is dark (no data-theme attribute needed, :root styles apply)
         }
         initTheme();
 
@@ -1438,6 +1487,8 @@
                 moveToFileBtn: 'Naar bestanden',
                 moveToDomainBtn: 'Naar domeinen',
                 keepBtn: 'Behouden',
+                filterPlaceholder: 'Filter IOCs...',
+                privateIpBadge: 'privaat',
             },
             en: {
                 title: 'YOINK!',
@@ -1502,6 +1553,8 @@
                 moveToFileBtn: 'Move to files',
                 moveToDomainBtn: 'Move to domains',
                 keepBtn: 'Keep',
+                filterPlaceholder: 'Filter IOCs...',
+                privateIpBadge: 'private',
             }
         };
 
@@ -1548,6 +1601,7 @@
         let highlightState = { currentIOC: null, currentIndex: -1 };
         let sourceDisplayHTML = '';
         let yoinked = false;
+        let privateIPsSet = new Set();
 
         // ─── Init ────────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
@@ -1566,6 +1620,39 @@
                 if (!e.target.closest('.ioc-longpress-actions')) {
                     dismissLongPress();
                 }
+            });
+
+            // ── Keyboard shortcuts ────────────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (document.getElementById('helpModal').style.display === 'block') { closeHelpModal(); return; }
+                    if (document.getElementById('siemModal').style.display === 'block') { closeSiemModal(); return; }
+                    if (document.getElementById('stixModal').style.display === 'block') { closeStixModal(); return; }
+                    if (document.getElementById('sourcePanel').classList.contains('open')) { closeSourcePanel(); return; }
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    if (document.activeElement === document.getElementById('inputText')) {
+                        e.preventDefault();
+                        if (yoinked) { switchToEdit(); } else { extractData(); }
+                    }
+                }
+            });
+
+            // ── Drag & drop file input ────────────────────────────────────────
+            const ta = document.getElementById('inputText');
+            ta.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                ta.classList.add('drag-over');
+            });
+            ta.addEventListener('dragleave', () => ta.classList.remove('drag-over'));
+            ta.addEventListener('drop', (e) => {
+                e.preventDefault();
+                ta.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => { ta.value = evt.target.result; };
+                reader.readAsText(file);
             });
         });
 
@@ -1686,6 +1773,7 @@
             const emailCounts = countOccurrences(rawEmails);
 
             let ips = Object.keys(ipCounts);
+            privateIPsSet = new Set(ips.filter(isPrivateIP));
             let urls = Object.keys(urlCounts);
             let emails = Object.keys(emailCounts);
 
@@ -1920,6 +2008,10 @@
             document.getElementById('selectAllBar').style.display = totalIOCs > 0 ? 'block' : 'none';
             document.getElementById('selectAll').checked = true;
             document.querySelectorAll('.section-toggle').forEach(cb => cb.checked = true);
+            // Clear any active filter
+            const filterEl = document.getElementById('iocFilter');
+            if (filterEl) { filterEl.value = ''; }
+            filterIOCs('');
 
             // Build source display for panel (not shown at top)
             if (totalIOCs > 0) {
@@ -2263,6 +2355,19 @@
             }, true);
         }
 
+        function filterIOCs(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll('.ioc-item').forEach(item => {
+                if (!q) {
+                    item.style.display = '';
+                } else {
+                    const label = item.querySelector('label');
+                    const text = (label ? label.textContent : '').toLowerCase();
+                    item.style.display = text.includes(q) ? '' : 'none';
+                }
+            });
+        }
+
         function switchToEdit() {
             closeSourcePanel();
             document.getElementById('inputText').style.display = 'block';
@@ -2274,6 +2379,10 @@
             btn.classList.remove('btn-unyoink');
             btn.classList.add('btn-primary');
             document.getElementById('postYoinkControls').style.display = 'none';
+            // Clear filter
+            const filterEl = document.getElementById('iocFilter');
+            if (filterEl) { filterEl.value = ''; }
+            filterIOCs('');
             document.getElementById('inputText').focus();
         }
 
@@ -2295,6 +2404,8 @@
                     .replace(/^fxps:\/\//i, 'ftps://').replace(/^fxp:\/\//i, 'ftp://');
                 const count = counts[rawKey] || counts[item] || 1;
                 const countDisplay = count > 1 ? ` <span class="ioc-count">(${count})</span>` : '';
+                const privateBadge = (category === 'ips' && privateIPsSet.has(rawKey))
+                    ? ` <span class="ip-private-badge">${escapeHtml(t('privateIpBadge'))}</span>` : '';
                 const itemId = `${category}_${i}`;
                 return `<div class="ioc-item" id="row_${itemId}">
             <input type="checkbox" checked
@@ -2302,7 +2413,7 @@
                    data-category="${category}"
                    data-value="${escapeAttr(item)}"
                    onchange="updateSectionToggle('${category}')">
-            <label onclick="highlightAndFlash('${escapeAttr(item)}', event, this)">${escapeHtml(item)}${countDisplay}</label>
+            <label onclick="highlightAndFlash('${escapeAttr(item)}', event, this)">${escapeHtml(item)}${countDisplay}${privateBadge}</label>
             <div class="ioc-actions">
                 <button title="${escapeAttr(t('copyTooltip'))}" onclick="copyIOC('${escapeAttr(item)}', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
                 <button title="${escapeAttr(t('editTooltip'))}" onclick="editIOC('${itemId}', '${escapeAttr(item)}', '${category}')"><svg viewBox="0 0 16 16"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>
@@ -2366,6 +2477,19 @@
 
         // ─── Helpers ─────────────────────────────────────────────────────────
         function ipToNumber(ip) { return ip.split('.').reduce((acc, octet) => acc * 256 + parseInt(octet), 0); }
+
+        function isPrivateIP(ip) {
+            const p = ip.split('.').map(Number);
+            const [a, b] = p;
+            return (
+                a === 10 ||
+                a === 127 ||
+                (a === 172 && b >= 16 && b <= 31) ||
+                (a === 192 && b === 168) ||
+                (a === 169 && b === 254) ||
+                (a === 100 && b >= 64 && b <= 127)
+            );
+        }
         function extractPrimaryDomain(str) {
             let domain = str.replace(/^(https?|ftps?|ftp):\/\//i, '').split('/')[0];
             let parts = domain.split('.');
