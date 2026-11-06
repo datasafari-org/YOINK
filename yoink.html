@@ -590,7 +590,6 @@
         }
 
         .copy-category-btn {
-            margin-left: auto;
             background: none;
             border: 1px solid var(--border-light);
             color: var(--text-secondary);
@@ -2024,7 +2023,16 @@
             }
             const domainCounts = countOccurrences(domainMatches);
             let domains = Object.keys(domainCounts);
-            const fileCounts = countOccurrences(fileMatches);
+            // Deduplicate: remove fragment matches (no underscore) that are a right-side
+            // suffix of a longer underscore filename (e.g. '04.pdf' inside 'DocuSign_Invoice_2026-11-04.pdf')
+            const ufSet = new Set(fileMatches.filter(f => f.includes('_')));
+            const dedupedFiles = fileMatches.filter(f => {
+                if (f.includes('_')) return true;
+                return !Array.from(ufSet).some(u =>
+                    u.length > f.length && u.endsWith(f) && '-_'.includes(u[u.length - f.length - 1])
+                );
+            });
+            const fileCounts = countOccurrences(dedupedFiles);
             let files = Object.keys(fileCounts);
 
             // Sort
