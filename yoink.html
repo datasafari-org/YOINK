@@ -1747,6 +1747,8 @@
                 { pattern: /\[at\]/gi, replacement: '@', label: '[at] \u2192 @' },
                 { pattern: /\(at\)/gi, replacement: '@', label: '(at) \u2192 @' },
                 { pattern: /\[:\]/g, replacement: ':', label: '[:] \u2192 :' },
+                { pattern: /\{\.}/g, replacement: '.', label: '{.} \u2192 .' },
+                { pattern: /\\\./g, replacement: '.', label: '\\. \u2192 .' },
             ];
             for (const rule of rules) {
                 const matches = text.match(rule.pattern);
@@ -3362,6 +3364,8 @@ SecurityAlert
                 <tr><td>[at]</td><td>@</td></tr>
                 <tr><td>(at)</td><td>@</td></tr>
                 <tr><td>[:]</td><td>:</td></tr>
+                <tr><td>{.}</td><td>.</td></tr>
+                <tr><td>\.</td><td>.</td></tr>
             </table>
         </div>
 
