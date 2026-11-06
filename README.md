@@ -1,4 +1,4 @@
-# YOINK! v1.1
+# YOINK! v1.2
 
 ### Your Observables Instantly Nabbed & Kategorized
 
@@ -223,13 +223,13 @@ For **domains** and **files** only: **long-press** (hold for 500ms) on any indic
 
 ## Design
 
-YOINK! v1.1 adopts the **PRISM design system** — a neutral Tailwind gray-blue palette with consistent card-based layout, box shadows, and a unified `rem`-based border-radius scale. Both themes are fully updated:
+YOINK! v1.2 uses the **quickapps family palette** — a dark-first design with a magenta/purple accent, deeper backgrounds, and consistent card-based layout, box shadows, and a unified `rem`-based border-radius scale. Both themes are fully updated:
 
 | Token | Dark | Light |
 |-------|------|-------|
-| Background primary | `#1f2937` | `#ffffff` |
-| Background secondary | `#111827` | `#f3f4f6` |
-| Accent | `#60a5fa` (blue-400) | `#3b82f6` (blue-500) |
+| Background primary | `#0e1015` | `#ffffff` |
+| Background secondary | `#171a21` | `#f3f4f6` |
+| Accent | `#d786c6` (magenta) | `#a94f97` (purple) |
 
 The design is CSS-only with zero additional dependencies.
 
@@ -240,7 +240,7 @@ The design is CSS-only with zero additional dependencies.
 - Any modern browser (Chrome, Firefox, Safari, Edge)
 - Zero external dependencies
 - Fully offline capable
-- Single HTML file (~160 KB)
+- Single HTML file (~170 KB)
 
 ---
 
@@ -269,6 +269,12 @@ See [FUTURE_FEATURES.md](FUTURE_FEATURES.md) for the full backlog of ideas and e
 ---
 
 ## Changelog
+
+### v1.2 — 2026-09-12
+- **Quickapps palette** — complete theme redesign from PRISM blue to a dark-first magenta/purple accent (`#d786c6`), deeper backgrounds (`#0e1015`), and updated favicon
+- **STIX 2.1 TLP 2.0 compliance** — marking-definition objects are now included in the bundle by definition (not just referenced by UUID), as required by the FIRST TLP 2.0 spec
+- **Manual STIX type detection** — relationship builder now infers the correct STIX pattern type for manually entered values (hashes, CVEs, ATT&CK IDs, IPs, domains, URLs, emails) instead of falling back to a generic artifact wrapper
+- **Typography tokens** — `--font-sans` and `--font-mono` CSS variables added; monospace elements use `ui-monospace` / `SF Mono` / `Menlo` stack
 
 ### v1.1 — 2026-02-17
 - **PRISM design system** — new neutral gray-blue palette, card-based layout, box shadows, unified `rem` border-radius scale across all components
