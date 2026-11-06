@@ -25,14 +25,14 @@ This document tracks potential enhancements and feature requests for YOINK!. The
 ## 🔧 User Experience Improvements
 
 ### UI/UX Enhancements
-- [ ] **Drag & Drop File Input** - Bulk processing of multiple text files at once
+- [ ] **Drag & Drop File Input** - Bulk processing of multiple text files at once *(single-file drag & drop done in v1.3)*
 - [ ] **Browser Extension** - Chrome/Firefox extension for right-click "YOINK from page"
-- [ ] **Auto Theme** - Add system preference detection (`prefers-color-scheme`) for automatic dark/light switching
-- [ ] **Keyboard Shortcuts** - Add hotkeys for common actions (Ctrl+E to extract, etc.)
+- [x] **Auto Theme** - Add system preference detection (`prefers-color-scheme`) for automatic dark/light switching *(v1.3)*
+- [x] **Keyboard Shortcuts** - Add hotkeys for common actions (Ctrl+E to extract, etc.) *(v1.3)*
 - [ ] **Column Sorting** - Click headers to sort IOCs alphabetically or by type
 - [ ] **Bulk Actions** - Select multiple IOCs and perform actions (delete, copy, export)
 - [ ] **IOC Statistics Dashboard** - Visual summary of extracted IOC counts per type
-- [ ] **Search/Filter IOCs** - Real-time filtering of extracted IOCs by keyword
+- [x] **Search/Filter IOCs** - Real-time filtering of extracted IOCs by keyword *(v1.3)*
 - [ ] **Undo/Redo Functionality** - Revert accidental deletions or edits
 
 ### Data Management
@@ -56,7 +56,7 @@ This document tracks potential enhancements and feature requests for YOINK!. The
 
 ### IOC Enrichment
 - [ ] **TLD Update Mechanism** - Option to refresh IANA TLD list (with offline fallback)
-- [ ] **Private IP Detection** - Flag RFC1918 private IPs separately
+- [x] **Private IP Detection** - Flag RFC1918 private IPs separately *(v1.3)*
 - [ ] **Bogon IP Detection** - Identify reserved/unroutable IP addresses
 - [ ] **Disposable Email Detection** - Flag temporary/throwaway email domains
 - [ ] **URL Scheme Validation** - Better handling of custom protocols (ftp://, file://, etc.)
@@ -80,9 +80,10 @@ This document tracks potential enhancements and feature requests for YOINK!. The
 - [ ] **CLI Version** - Command-line interface for scripting/automation
 
 ### SIEM Integration
-- [x] **Microsoft Sentinel Queries** - KQL wildcard queries *(Completed)*
-- [x] **Splunk Queries** - SPL search syntax *(Completed)*
-- [x] **Elastic/ELK Queries** - Lucene query syntax *(Completed)*
+- [x] **Microsoft Sentinel Queries** - KQL wildcard queries *(v0.7)*
+- [x] **Splunk Queries** - SPL search syntax *(v0.7)*
+- [x] **Elastic/ELK Queries** - Lucene query syntax *(v0.7)*
+- [x] **Wazuh Queries** - OpenSearch/Lucene with Wazuh field names *(v1.3)*
 - [ ] **QRadar Queries** - AQL (Ariel Query Language) support
 - [ ] **Chroniclesecurity Queries** - Google Chronicle UDM search syntax
 - [ ] **LogRhythm Queries** - LogRhythm search syntax
@@ -168,6 +169,23 @@ Have an idea not listed here? Open an issue on GitHub or contact:
 
 ## 🏆 Completed Features
 
+### v1.3 (2026-11-06)
+- [x] **Cyan/Teal Palette** — New accent color (`#00c8d4` dark / `#0097a7` light), replacing magenta/purple
+- [x] **Auto Theme** — System `prefers-color-scheme` detection for automatic dark/light switching
+- [x] **Keyboard Shortcuts** — Ctrl+E extract, Ctrl+Shift+C copy all, etc.
+- [x] **Drag & Drop File Input** — Single `.txt` file drag & drop onto textarea
+- [x] **IOC Filter / Search** — Real-time keyword filter on extracted IOCs
+- [x] **Private IP Detection** — RFC1918 badges on IPv4 results
+- [x] **Timestamps on Exports** — All export filenames include `YYYYMMDD_HHmmss`
+- [x] **Wazuh SIEM Queries** — OpenSearch/Lucene queries with Wazuh-specific field names
+- [x] **ATT&CK Matrix Badges** — TA#### tactic IDs classified as Enterprise / Mobile / ICS with color badges
+- [x] **STIX ATT&CK Version** — `x_mitre_attack_version` custom property on attack-pattern SDOs
+- [x] **Extended Refang Patterns** — Added `{.}`, `\.`, `meow://`, `fxp://`, `(.)`, `(dot)`, `[@]`, `[at]`, `(at)`, `[:]`
+
+### v1.2 (2026-09-xx)
+- [x] **STIX TLP 2.0** — Updated TLP marking definitions to TLP 2.0 spec
+- [x] **UI Refinements** — Various layout and accessibility improvements
+
 ### v1.1 (2026-02-17)
 - [x] **PRISM Design System** — Neutral gray-blue palette, card-based layout, box shadows, unified `rem` border-radius scale
 - [x] **System Font Stack** — `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto` for crisp cross-platform rendering
@@ -209,6 +227,6 @@ Have an idea not listed here? Open an issue on GitHub or contact:
 
 ---
 
-**Last Updated**: 2026-02-17
-**Current Version**: v1.1
+**Last Updated**: 2026-11-06
+**Current Version**: v1.3
 **Maintained By**: Mike Meerkat (Datasafari.org) & Contributors
