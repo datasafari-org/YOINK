@@ -337,25 +337,29 @@
 
         .lang-btn {
             background: none;
-            border: none;
-            padding: 4px 8px;
+            border: 1px solid transparent;
+            padding: 3px 7px;
             margin: 0;
-            font-size: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .06em;
             cursor: pointer;
             border-radius: 0.25rem;
-            color: var(--text-primary);
-            line-height: 1;
-            opacity: 0.5;
-            transition: opacity 0.2s, background-color 0.2s;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            opacity: 0.6;
+            transition: opacity 0.15s, background-color 0.15s, border-color 0.15s;
         }
 
         .lang-btn.active {
             opacity: 1;
+            color: var(--accent);
             background-color: var(--bg-tertiary);
+            border-color: var(--accent);
         }
 
         .lang-btn:hover {
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         /* ─── Theme toggle (sun/moon pill) ────────────────────────────────── */
@@ -1146,8 +1150,8 @@
         </div>
         <div class="top-bar-controls">
             <div class="lang-toggle">
-                <button class="lang-btn active" onclick="setLanguage('nl')" id="langNL">&#x1F1F3;&#x1F1F1;</button>
-                <button class="lang-btn" onclick="setLanguage('en')" id="langEN">&#x1F1EC;&#x1F1E7;</button>
+                <button class="lang-btn active" onclick="setLanguage('nl')" id="langNL" title="Nederlands">NL</button>
+                <button class="lang-btn" onclick="setLanguage('en')" id="langEN" title="English">EN</button>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode" id="themeToggle">
                 <div class="theme-toggle-track">
@@ -1317,7 +1321,7 @@
         <span data-i18n="footerText">Meer info over defanging:</span> <a href="https://www.ietf.org/archive/id/draft-grimminck-safe-ioc-sharing-00.html"
             target="_blank">IETF Draft</a>
         <span style="margin: 0 10px;">|</span>
-        <span data-i18n="githubText">Project on GitHub:</span> <a href="https://github.com/datasafari-org/YOINK/blob/main/yoink.html"
+        <span data-i18n="githubText">Project on GitHub:</span> <a href="https://github.com/datasafari-org/YOINK"
             target="_blank">datasafari-org/YOINK</a>
         <span style="margin: 0 10px;">|</span>
         <span style="color: var(--text-secondary);">v1.3</span>
@@ -3399,8 +3403,11 @@ SecurityAlert
                 <li>${isNL ? '<strong>Kopi\u00EBren</strong> — kopieert de waarde naar het klembord' : '<strong>Copy</strong> — copies the value to the clipboard'}</li>
                 <li>${isNL ? '<strong>Bewerken</strong> — maakt inline bewerking van de waarde mogelijk (bevestig met Enter, annuleer met Escape)' : '<strong>Edit</strong> — allows inline editing of the value (confirm with Enter, cancel with Escape)'}</li>
                 <li>${isNL ? '<strong>Verwijderen</strong> — verwijdert de IOC uit de lijst' : '<strong>Delete</strong> — removes the IOC from the list'}</li>
-                <li>${isNL ? '<strong>Verplaatsen</strong> — houd een domein- of bestandsindicator lang ingedrukt (500ms) om verplaatsknoppen te tonen. U kunt de IOC verplaatsen naar de andere categorie (domeinen ↔ bestanden) of behouden. Handig wanneer de automatische classificatie een indicator in de verkeerde categorie heeft geplaatst.' : '<strong>Move</strong> — long-press (500ms) a domain or file indicator to reveal move buttons. You can move the IOC to the other category (domains ↔ files) or keep it. Useful when the automatic classification placed an indicator in the wrong category.'}</li>
             </ul>
+            <p>${isNL
+                    ? '<strong>Verplaatsen (lang indrukken)</strong> — houd een domein- of bestandsindicator lang ingedrukt (500 ms) om verplaatsknoppen te tonen. U kunt de IOC verplaatsen naar de andere categorie (domeinen ↔ bestanden) of behouden. Handig wanneer de automatische classificatie een indicator in de verkeerde categorie heeft geplaatst.'
+                    : '<strong>Move (long-press)</strong> — long-press (500 ms) a domain or file indicator to reveal move buttons. You can move the IOC to the other category (domains ↔ files) or keep it. Useful when automatic classification placed an indicator in the wrong category.'
+                }</p>
         </div>
 
         <div class="doc-section">

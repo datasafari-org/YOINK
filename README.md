@@ -1,8 +1,10 @@
-# YOINK! v1.2
+# YOINK! v1.3
 
 ### Your Observables Instantly Nabbed & Kategorized
 
 > A zero-dependency, single-file HTML tool that yoinks Indicators of Compromise out of raw text. Extract, defang, edit, and export to CSV, JSON, or STIX 2.1 — all from one file you can run anywhere.
+
+[![Try YOINK! in your browser](https://img.shields.io/badge/Try%20YOINK!-yoink.datasafari.org-00c8d4?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xNCA0SDJhMSAxIDAgMCAwLTEgMXY2YTEgMSAwIDAgMCAxIDFoMTJhMSAxIDAgMCAwIDEtMVY1YTEgMSAwIDAgMC0xLTF6TTIgMTFWNWgxMnY2SDJ6Ii8+PC9zdmc+)](https://yoink.datasafari.org)
 
 ![YOINK! - extraction view](screenshots/yoink.png)
 
