@@ -1965,6 +1965,16 @@
                 }
                 // else: not a valid TLD and not a known file extension — discard (false positive)
             });
+            // Second pass: catch filenames with underscores (e.g. DocuSign_Invoice_2026-11-04.pdf)
+            // The domain regex char class [a-zA-Z0-9-] excludes underscores, so these are missed
+            const underscoreFileRegex = /\b[a-zA-Z0-9][a-zA-Z0-9_-]*_[a-zA-Z0-9_-]*\.[a-zA-Z0-9]{2,6}\b/g;
+            let ufm;
+            while ((ufm = underscoreFileRegex.exec(text)) !== null) {
+                const ext = ufm[0].split('.').pop().toLowerCase();
+                if (fileExtensions.has(ext) && !validTLDs.has(ext)) {
+                    fileMatches.push(ufm[0]);
+                }
+            }
             const domainCounts = countOccurrences(domainMatches);
             let domains = Object.keys(domainCounts);
             const fileCounts = countOccurrences(fileMatches);
