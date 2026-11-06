@@ -2446,8 +2446,9 @@
                 const privateBadge = (category === 'ips' && privateIPsSet.has(rawKey))
                     ? ` <span class="ip-private-badge">${escapeHtml(t('privateIpBadge'))}</span>` : '';
                 const attackMatrix = category === 'attackTechniques' ? getAttackMatrix(rawKey) : null;
+                const attackMatrixKeys = { enterprise: 'attackMatrixEnterprise', mobile: 'attackMatrixMobile', ics: 'attackMatrixICS' };
                 const attackBadge = attackMatrix
-                    ? ` <span class="attack-matrix-badge ${attackMatrix}">${escapeHtml(t('attackMatrix' + attackMatrix.charAt(0).toUpperCase() + attackMatrix.slice(1)))}</span>` : '';
+                    ? ` <span class="attack-matrix-badge ${attackMatrix}">${escapeHtml(t(attackMatrixKeys[attackMatrix]))}</span>` : '';
                 const itemId = `${category}_${i}`;
                 return `<div class="ioc-item" id="row_${itemId}">
             <input type="checkbox" checked
@@ -2777,9 +2778,6 @@
             const tlpValue = document.getElementById('stixTLP').value;
             const attackVersion = document.getElementById('stixAttackVersion').value;
             const identityName = document.getElementById('stixIdentity').value || 'Unknown';
-            const attackUrlBase = attackVersion
-                ? `https://attack.mitre.org/versions/${attackVersion}`
-                : 'https://attack.mitre.org';
 
             const now = new Date().toISOString();
             const tlpDef = TLP_DEFS[tlpValue] || TLP_DEFS.amber;
@@ -2826,8 +2824,9 @@
                             created: now, modified: now, name: item.value,
                             external_references: [{
                                 source_name: 'mitre-attack', external_id: item.value.toUpperCase(),
-                                url: `${attackUrlBase}/${attackPath}`
-                            }]
+                                url: `https://attack.mitre.org/${attackPath}`
+                            }],
+                            ...(attackVersion ? { x_mitre_attack_version: attackVersion } : {})
                         };
                         break;
                     }
@@ -2899,8 +2898,9 @@
                         created: now, modified: now, name: manualValue,
                         external_references: [{
                             source_name: 'mitre-attack', external_id: manualValue.toUpperCase(),
-                            url: `${attackUrlBase}/${manualAttackPath}`
+                            url: `https://attack.mitre.org/${manualAttackPath}`
                         }],
+                        ...(attackVersion ? { x_mitre_attack_version: attackVersion } : {}),
                         created_by_ref: identityId,
                         object_marking_refs: [tlpMarkingId]
                     });
