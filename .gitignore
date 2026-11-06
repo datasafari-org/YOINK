@@ -35,3 +35,6 @@ Temporary Items
 
 # AI assistant context (local only)
 CLAUDE.MD
+
+# Local design explorations (not for release)
+design/
