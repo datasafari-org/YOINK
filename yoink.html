@@ -2028,9 +2028,13 @@
             const ufSet = new Set(fileMatches.filter(f => f.includes('_')));
             const dedupedFiles = fileMatches.filter(f => {
                 if (f.includes('_')) return true;
-                return !Array.from(ufSet).some(u =>
-                    u.length > f.length && u.endsWith(f) && '-_'.includes(u[u.length - f.length - 1])
-                );
+                return !Array.from(ufSet).some(u => {
+                    if (!u.endsWith(f) || u.length <= f.length) return false;
+                    const sep = u[u.length - f.length - 1];
+                    // Spurious fragment if: separator before it is non-alnum (e.g. '-', '_')
+                    // OR the fragment itself starts with non-alnum (e.g. '-11-04.pdf')
+                    return !/[a-zA-Z0-9]/.test(sep) || !/[a-zA-Z0-9]/.test(f[0]);
+                });
             });
             const fileCounts = countOccurrences(dedupedFiles);
             let files = Object.keys(fileCounts);
