@@ -589,6 +589,34 @@
             cursor: pointer;
         }
 
+        .copy-category-btn {
+            margin-left: auto;
+            background: none;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 0.25rem;
+            line-height: 1;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+        .copy-category-btn svg {
+            width: 13px;
+            height: 13px;
+            display: block;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .copy-category-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         .select-all-bar {
             margin: 0.5rem 0;
             padding: 0.5rem 0.75rem;
@@ -1176,6 +1204,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M2 9h14M9 2c-2.5 2.5-2.5 11.5 0 14M9 2c2.5 2.5 2.5 11.5 0 14"/></svg></span><span data-i18n="sectionIPs">IP-adressen:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="ips" checked
                         onchange="toggleSection('ips', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('ips', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="ips"></div>
         </div>
@@ -1185,6 +1214,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M2 9h14M9 2c-2.5 2.5-2.5 11.5 0 14M9 2c2.5 2.5 2.5 11.5 0 14"/><path d="M6 6.5h2v2h2v2H8" stroke-width="1" fill="none"/></svg></span><span data-i18n="sectionIPv6">IPv6-adressen:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="ipv6" checked
                         onchange="toggleSection('ipv6', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('ipv6', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="ipv6"></div>
         </div>
@@ -1194,6 +1224,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="5" width="14" height="8" rx="1"/><path d="M6 9h6M9 5v8"/></svg></span><span data-i18n="sectionCIDR">CIDR-bereiken:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="cidr" checked
                         onchange="toggleSection('cidr', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('cidr', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="cidr"></div>
         </div>
@@ -1203,6 +1234,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M7.5 10.5a3.5 3.5 0 0 0 5 0l2-2a3.5 3.5 0 0 0-5-5l-1 1"/><path d="M10.5 7.5a3.5 3.5 0 0 0-5 0l-2 2a3.5 3.5 0 0 0 5 5l1-1"/></svg></span><span data-i18n="sectionURLs">URLs:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="urls" checked
                         onchange="toggleSection('urls', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('urls', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="urls"></div>
         </div>
@@ -1212,6 +1244,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M2 7h14"/><circle cx="4.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/><circle cx="6.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/><circle cx="8.5" cy="5.5" r="0.5" fill="var(--accent)" stroke="none"/></svg></span><span data-i18n="sectionDomains">Domeinen:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="domains" checked
                         onchange="toggleSection('domains', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('domains', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="domains"></div>
         </div>
@@ -1221,6 +1254,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M4 2h6l4 4v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M10 2v4h4"/></svg></span><span data-i18n="sectionFiles">Bestanden:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="files" checked
                         onchange="toggleSection('files', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('files', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="files"></div>
         </div>
@@ -1230,6 +1264,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M2 4l7 5 7-5"/></svg></span><span data-i18n="sectionEmails">E-mailadressen:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="emails" checked
                         onchange="toggleSection('emails', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('emails', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="emails"></div>
         </div>
@@ -1239,6 +1274,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><rect x="3" y="3" width="12" height="12" rx="2"/><path d="M6 9h6M9 6v6"/></svg></span><span data-i18n="sectionMD5">MD5:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="md5" checked
                         onchange="toggleSection('md5', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('md5', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="md5"></div>
         </div>
@@ -1248,6 +1284,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/></svg></span><span data-i18n="sectionSHA1">SHA-1:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="sha1" checked
                         onchange="toggleSection('sha1', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('sha1', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="sha1"></div>
         </div>
@@ -1257,6 +1294,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/><path d="M7 9l2 2 3-4"/></svg></span><span data-i18n="sectionSHA256">SHA-256:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="sha256" checked
                         onchange="toggleSection('sha256', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('sha256', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="sha256"></div>
         </div>
@@ -1266,6 +1304,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2L3 6v4c0 4.4 2.6 7.5 6 8.5 3.4-1 6-4.1 6-8.5V6L9 2z"/><path d="M7 9l2 2 3-4"/><circle cx="9" cy="9" r="2" fill="none" stroke-width="1"/></svg></span><span data-i18n="sectionSHA512">SHA-512:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="sha512" checked
                         onchange="toggleSection('sha512', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('sha512', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="sha512"></div>
         </div>
@@ -1275,6 +1314,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M9 2l1.5 4h4l-3.5 2.5 1.5 4L9 10l-3.5 2.5 1.5-4L3.5 6h4L9 2z"/></svg></span><span data-i18n="sectionCVEs">CVEs:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="cves" checked
                         onchange="toggleSection('cves', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('cves', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="cves"></div>
         </div>
@@ -1284,6 +1324,7 @@
                 <h3><span class="section-icon"><svg viewBox="0 0 18 18"><path d="M3 15l4-4m0 0l6-6m-6 6L4 8l7-5 4 4-5 7z"/></svg></span><span data-i18n="sectionATTACK">ATT&amp;CK Technieken:</span></h3>
                 <label><input type="checkbox" class="section-toggle" data-section="attackTechniques" checked
                         onchange="toggleSection('attackTechniques', this.checked)"> <span data-i18n="all">Alles</span></label>
+                <button class="copy-category-btn" data-i18n-title="copyCategoryTooltip" title="Copy selection" onclick="copyCategoryIOCs('attackTechniques', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
             </div>
             <div id="attackTechniques"></div>
         </div>
@@ -1493,6 +1534,7 @@
                 deleteTooltip: 'Verwijder',
                 moveToFileBtn: 'Naar bestanden',
                 moveToDomainBtn: 'Naar domeinen',
+                copyCategoryTooltip: 'Kopieer selectie',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
                 attackMatrixEnterprise: 'Enterprise',
@@ -1563,6 +1605,7 @@
                 deleteTooltip: 'Delete',
                 moveToFileBtn: 'Move to files',
                 moveToDomainBtn: 'Move to domains',
+                copyCategoryTooltip: 'Copy selection',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
                 attackMatrixEnterprise: 'Enterprise',
@@ -1593,6 +1636,10 @@
             });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const val = t(el.getAttribute('data-i18n-title'));
+                if (val) el.title = val;
             });
             // Re-render no-results if present
             document.querySelectorAll('.no-results').forEach(el => {
@@ -2222,6 +2269,33 @@
 
         function copyIOC(value, btnEl) {
             navigator.clipboard.writeText(value).then(() => {
+                const orig = btnEl.innerHTML;
+                btnEl.innerHTML = '<svg viewBox="0 0 16 16"><path d="M3 8l4 4 6-8"/></svg>';
+                btnEl.style.color = 'var(--accent)';
+                setTimeout(() => { btnEl.innerHTML = orig; btnEl.style.color = ''; }, 1000);
+            });
+        }
+
+        function copyCategoryIOCs(category, btnEl) {
+            const container = document.getElementById(category);
+            if (!container) return;
+            const defang = document.getElementById('defangToggle').checked;
+            const defangFns = {
+                ips: defangIP, ipv6: v => v, cidr: v => v,
+                urls: defangURL, domains: defangDomain, emails: defangEmail,
+                md5: v => v, sha1: v => v, sha256: v => v, sha512: v => v,
+                cves: v => v, attackTechniques: v => v, files: v => v
+            };
+            const values = [];
+            container.querySelectorAll('input[type="checkbox"][data-value]:checked').forEach(cb => {
+                const val = cb.getAttribute('data-value');
+                if (val) {
+                    const fn = defangFns[category] || (v => v);
+                    values.push(defang ? fn(val) : val);
+                }
+            });
+            if (!values.length) return;
+            navigator.clipboard.writeText(values.join('\n')).then(() => {
                 const orig = btnEl.innerHTML;
                 btnEl.innerHTML = '<svg viewBox="0 0 16 16"><path d="M3 8l4 4 6-8"/></svg>';
                 btnEl.style.color = 'var(--accent)';

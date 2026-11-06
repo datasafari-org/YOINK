@@ -37,6 +37,7 @@ Paste your text. Hit the YOINK! button. Done.
 | **Source viewer** | Click any IOC to see all its occurrences highlighted in the original text |
 | **Inline editing** | Edit, copy, or delete any extracted IOC on the fly |
 | **Move between categories** | Click the move button on a domain or file IOC to reclassify it |
+| **Copy by category** | Copy all selected IOCs in a category to clipboard with one click (one value per line) |
 | **3 export formats** | CSV, JSON, STIX 2.1 |
 | **STIX 2.1 bundles** | Full bundle with Identity, SCOs, Indicators, Relationships, Report, and TLP markings |
 | **SIEM queries** | Auto-generated wildcard queries for Microsoft Sentinel (KQL), Splunk (SPL), and Elastic (Lucene) |
@@ -69,7 +70,7 @@ Configure metadata, TLP marking, confidence, and define relationships between IO
 
 ### IOC actions
 
-Each indicator comes with copy, edit, and delete actions. Domain and file indicators support long-press to reclassify.
+Each indicator comes with copy, edit, delete, and (for domains/files) move actions.
 
 ![IOC actions](screenshots/yoink_actions.png)
 
@@ -219,19 +220,19 @@ Every extracted indicator has three action buttons:
 
 ### Move between categories
 
-For **domains** and **files** only: **long-press** (hold for 500ms) on any indicator to reveal move buttons. This lets you reclassify an IOC when the automatic detection got it wrong — move a domain to files or a file to domains.
+For **domains** and **files** only: click the **move button** (swap arrows icon) in the action bar to reclassify an IOC when the automatic detection got it wrong — move a domain to files or a file to domains.
 
 ---
 
 ## Design
 
-YOINK! v1.2 uses the **quickapps family palette** — a dark-first design with a magenta/purple accent, deeper backgrounds, and consistent card-based layout, box shadows, and a unified `rem`-based border-radius scale. Both themes are fully updated:
+YOINK! v1.3 uses the **PRISM design system** — a dark-first design with a cyan/teal accent, deeper backgrounds, and consistent card-based layout, box shadows, and a unified `rem`-based border-radius scale. Both themes are fully updated:
 
 | Token | Dark | Light |
 |-------|------|-------|
 | Background primary | `#0e1015` | `#ffffff` |
 | Background secondary | `#171a21` | `#f3f4f6` |
-| Accent | `#d786c6` (magenta) | `#a94f97` (purple) |
+| Accent | `#00c8d4` (cyan) | `#0097a7` (teal) |
 
 The design is CSS-only with zero additional dependencies.
 
@@ -242,7 +243,7 @@ The design is CSS-only with zero additional dependencies.
 - Any modern browser (Chrome, Firefox, Safari, Edge)
 - Zero external dependencies
 - Fully offline capable
-- Single HTML file (~170 KB)
+- Single HTML file (~186 KB)
 
 ---
 
@@ -271,6 +272,15 @@ See [FUTURE_FEATURES.md](FUTURE_FEATURES.md) for the full backlog of ideas and e
 ---
 
 ## Changelog
+
+### v1.3 — 2026-11-06
+- **Cyan/teal palette** — PRISM design system accent updated from magenta (`#d786c6`) to cyan/teal (`#00c8d4` dark / `#0097a7` light)
+- **URL hostname defanging** — dots in the authority portion of URLs are now defanged per IETF draft-grimminck-safe-ioc-sharing
+- **Underscore filenames** — filenames containing underscores (e.g. `DocuSign_Invoice_2026-11-04.pdf`) are now correctly extracted
+- **Copy by category** — each IOC section header has a copy button that copies all selected values in that category, one per line
+- **Move button** — explicit swap-arrows move button replaces long-press gesture for reclassifying domains/files
+- **Language toggle** — NL/EN text buttons replace emoji flags
+- **Extended refang patterns** — `{.}` and `\.` added to the refang pipeline
 
 ### v1.2 — 2026-09-12
 - **Quickapps palette** — complete theme redesign from PRISM blue to a dark-first magenta/purple accent (`#d786c6`), deeper backgrounds (`#0e1015`), and updated favicon
