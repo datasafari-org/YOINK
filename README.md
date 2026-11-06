@@ -36,7 +36,7 @@ Paste your text. Hit the YOINK! button. Done.
 | **Defang output** | One-click toggle to defang all extracted indicators for safe sharing |
 | **Source viewer** | Click any IOC to see all its occurrences highlighted in the original text |
 | **Inline editing** | Edit, copy, or delete any extracted IOC on the fly |
-| **Move between categories** | Long-press a domain or file IOC to reclassify it |
+| **Move between categories** | Click the move button on a domain or file IOC to reclassify it |
 | **3 export formats** | CSV, JSON, STIX 2.1 |
 | **STIX 2.1 bundles** | Full bundle with Identity, SCOs, Indicators, Relationships, Report, and TLP markings |
 | **SIEM queries** | Auto-generated wildcard queries for Microsoft Sentinel (KQL), Splunk (SPL), and Elastic (Lucene) |

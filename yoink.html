@@ -647,34 +647,6 @@
             background: var(--danger-bg);
         }
 
-        /* ─── Long-press move buttons ───────────────────────────────────────── */
-        .ioc-longpress-actions {
-            display: inline-flex;
-            gap: 4px;
-            margin-left: 6px;
-            vertical-align: baseline;
-            animation: lp-fade-in 0.15s ease;
-        }
-        @keyframes lp-fade-in {
-            from { opacity: 0; transform: translateX(-4px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .ioc-longpress-actions button {
-            background: var(--accent-subtle);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            cursor: pointer;
-            padding: 1px 8px;
-            font-size: 12px;
-            font-family: inherit;
-            border-radius: 0.25rem;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
-        .ioc-longpress-actions button:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
 
         /* ─── Inline edit input ───────────────────────────────────────────── */
         .ioc-item .ioc-edit-input {
@@ -1521,7 +1493,6 @@
                 deleteTooltip: 'Verwijder',
                 moveToFileBtn: 'Naar bestanden',
                 moveToDomainBtn: 'Naar domeinen',
-                keepBtn: 'Behouden',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
                 attackMatrixEnterprise: 'Enterprise',
@@ -1592,7 +1563,6 @@
                 deleteTooltip: 'Delete',
                 moveToFileBtn: 'Move to files',
                 moveToDomainBtn: 'Move to domains',
-                keepBtn: 'Keep',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
                 attackMatrixEnterprise: 'Enterprise',
@@ -1659,11 +1629,6 @@
             setLanguage(currentLang);
             updateFavicon();
             initSourcePanelResize();
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.ioc-longpress-actions')) {
-                    dismissLongPress();
-                }
-            });
 
             // ── Keyboard shortcuts ────────────────────────────────────────────
             document.addEventListener('keydown', (e) => {
@@ -2355,50 +2320,6 @@
             updateGlobalToggle();
         }
 
-        let longPressTimer = null;
-        let longPressTarget = null;
-        let longPressFired = false;
-
-        function dismissLongPress() {
-            const existing = document.querySelector('.ioc-longpress-actions');
-            if (existing) existing.remove();
-            longPressTarget = null;
-        }
-
-        function showLongPressActions(row, itemId, category) {
-            dismissLongPress();
-            closeSourcePanel();
-            const label = row.querySelector('label');
-            if (!label) return;
-            longPressFired = true;
-            const wrapper = document.createElement('span');
-            wrapper.className = 'ioc-longpress-actions';
-            if (category === 'domains') {
-                wrapper.innerHTML = `<button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); moveIOC('${escapeAttr(itemId)}', 'domains', 'files'); dismissLongPress()">${escapeHtml(t('moveToFileBtn'))}</button><button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); dismissLongPress()">${escapeHtml(t('keepBtn'))}</button>`;
-            } else {
-                wrapper.innerHTML = `<button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); moveIOC('${escapeAttr(itemId)}', 'files', 'domains'); dismissLongPress()">${escapeHtml(t('moveToDomainBtn'))}</button><button onmousedown="event.stopPropagation()" onclick="event.stopPropagation(); dismissLongPress()">${escapeHtml(t('keepBtn'))}</button>`;
-            }
-            label.appendChild(wrapper);
-            longPressTarget = row;
-        }
-
-        function initLongPress(row, itemId, category) {
-            const label = row.querySelector('label');
-            if (!label) return;
-            label.addEventListener('mousedown', (e) => {
-                if (e.button !== 0) return;
-                longPressFired = false;
-                longPressTimer = setTimeout(() => {
-                    longPressTimer = null;
-                    showLongPressActions(row, itemId, category);
-                }, 500);
-            });
-            label.addEventListener('mouseup', () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } });
-            label.addEventListener('mouseleave', () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } });
-            label.addEventListener('click', (e) => {
-                if (longPressFired) { e.stopPropagation(); e.preventDefault(); longPressFired = false; }
-            }, true);
-        }
 
         function filterIOCs(query) {
             const q = query.toLowerCase().trim();
@@ -2456,6 +2377,9 @@
                 const attackBadge = attackMatrix
                     ? ` <span class="attack-matrix-badge ${attackMatrix}">${escapeHtml(t(attackMatrixKeys[attackMatrix]))}</span>` : '';
                 const itemId = `${category}_${i}`;
+                const moveBtn = (category === 'domains' || category === 'files')
+                    ? `<button class="move-btn" title="${escapeAttr(t(category === 'domains' ? 'moveToFileBtn' : 'moveToDomainBtn'))}" onclick="moveIOC('${itemId}', '${category}', '${category === 'domains' ? 'files' : 'domains'}')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h10M9 2l3 3-3 3M14 11H4m3-3l-3 3 3 3"/></svg></button>`
+                    : '';
                 return `<div class="ioc-item" id="row_${itemId}">
             <input type="checkbox" checked
                    id="${itemId}"
@@ -2466,18 +2390,11 @@
             <div class="ioc-actions">
                 <button title="${escapeAttr(t('copyTooltip'))}" onclick="copyIOC('${escapeAttr(item)}', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
                 <button title="${escapeAttr(t('editTooltip'))}" onclick="editIOC('${itemId}', '${escapeAttr(item)}', '${category}')"><svg viewBox="0 0 16 16"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>
+                ${moveBtn}
                 <button class="delete-btn" title="${escapeAttr(t('deleteTooltip'))}" onclick="deleteIOC('${itemId}', '${category}')"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
             </div>
         </div>`;
             }).join('');
-            // Attach long-press handlers for domains and files
-            if (category === 'domains' || category === 'files') {
-                items.forEach((item, i) => {
-                    const itemId = `${category}_${i}`;
-                    const row = document.getElementById('row_' + itemId);
-                    if (row) initLongPress(row, itemId, category);
-                });
-            }
         }
 
         function escapeHtml(str) {
@@ -3405,8 +3322,8 @@ SecurityAlert
                 <li>${isNL ? '<strong>Verwijderen</strong> — verwijdert de IOC uit de lijst' : '<strong>Delete</strong> — removes the IOC from the list'}</li>
             </ul>
             <p>${isNL
-                    ? '<strong>Verplaatsen (lang indrukken)</strong> — houd een domein- of bestandsindicator lang ingedrukt (500 ms) om verplaatsknoppen te tonen. U kunt de IOC verplaatsen naar de andere categorie (domeinen ↔ bestanden) of behouden. Handig wanneer de automatische classificatie een indicator in de verkeerde categorie heeft geplaatst.'
-                    : '<strong>Move (long-press)</strong> — long-press (500 ms) a domain or file indicator to reveal move buttons. You can move the IOC to the other category (domains ↔ files) or keep it. Useful when automatic classification placed an indicator in the wrong category.'
+                    ? '<strong>Verplaatsen</strong> — domein- en bestandsindicatoren hebben een extra verplaatsknop (pijltjes-icoon). Klik erop om de IOC direct naar de andere categorie te verplaatsen (domeinen ↔ bestanden). Handig wanneer de automatische classificatie een indicator in de verkeerde categorie heeft geplaatst.'
+                    : '<strong>Move</strong> — domain and file indicators have an extra move button (swap arrows icon). Click it to instantly move the IOC to the other category (domains ↔ files). Useful when automatic classification placed an indicator in the wrong category.'
                 }</p>
         </div>
 
