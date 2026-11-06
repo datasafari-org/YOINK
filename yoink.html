@@ -713,6 +713,26 @@
             text-transform: uppercase;
         }
 
+        /* ─── ATT&CK matrix badge ────────────────────────────────────────── */
+        .attack-matrix-badge {
+            display: inline-block; font-size: 10px; font-weight: 600;
+            padding: 1px 5px; border-radius: 3px; margin-left: 6px;
+            font-family: var(--font-sans); vertical-align: middle;
+            letter-spacing: 0.03em; text-transform: uppercase;
+        }
+        .attack-matrix-badge.enterprise {
+            background: var(--accent-subtle); color: var(--accent);
+            border: 1px solid var(--accent-flash);
+        }
+        .attack-matrix-badge.mobile {
+            background: var(--bg-tertiary); color: var(--accent-warning);
+            border: 1px solid var(--border-light);
+        }
+        .attack-matrix-badge.ics {
+            background: var(--danger-bg); color: var(--accent-danger-color);
+            border: 1px solid var(--border-light);
+        }
+
         /* ─── IOC filter input ────────────────────────────────────────────── */
         .ioc-filter-input {
             flex: 1;
@@ -1327,6 +1347,15 @@
                         <option value="red">TLP:RED</option>
                     </select>
                 </label>
+                <label><span data-i18n="stixAttackVersionLabel">ATT&CK Version:</span><br>
+                    <select id="stixAttackVersion">
+                        <option value="">Unversioned (canonical URL)</option>
+                        <option value="v13">ATT&CK v13</option>
+                        <option value="v14">ATT&CK v14</option>
+                        <option value="v15">ATT&CK v15</option>
+                        <option value="v16" selected>ATT&CK v16 (latest)</option>
+                    </select>
+                </label>
                 <label><span data-i18n="stixIdentity">Identiteit / Organisatienaam:</span><br><input type="text"
                         id="stixIdentity" placeholder=""></label>
             </fieldset>
@@ -1464,6 +1493,7 @@
                 stixDescription: 'Beschrijving:',
                 stixConfidence: 'Betrouwbaarheid (0-100):',
                 stixTLPLabel: 'TLP Markering:',
+                stixAttackVersionLabel: 'ATT&CK Versie:',
                 stixIdentity: 'Identiteit / Organisatienaam:',
                 stixSelectedIOCs: 'Geselecteerde IOCs',
                 stixRelationships: 'Relaties (SROs)',
@@ -1490,6 +1520,9 @@
                 keepBtn: 'Behouden',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
+                attackMatrixEnterprise: 'Enterprise',
+                attackMatrixMobile: 'Mobile',
+                attackMatrixICS: 'ICS',
             },
             en: {
                 title: 'YOINK!',
@@ -1531,6 +1564,7 @@
                 stixDescription: 'Description:',
                 stixConfidence: 'Confidence (0-100):',
                 stixTLPLabel: 'TLP Marking:',
+                stixAttackVersionLabel: 'ATT&CK Version:',
                 stixIdentity: 'Identity / Organization Name:',
                 stixSelectedIOCs: 'Selected IOCs',
                 stixRelationships: 'Relationships (SROs)',
@@ -1557,6 +1591,9 @@
                 keepBtn: 'Keep',
                 filterPlaceholder: 'Filter IOCs...',
                 privateIpBadge: 'private',
+                attackMatrixEnterprise: 'Enterprise',
+                attackMatrixMobile: 'Mobile',
+                attackMatrixICS: 'ICS',
             }
         };
 
@@ -2408,6 +2445,9 @@
                 const countDisplay = count > 1 ? ` <span class="ioc-count">(${count})</span>` : '';
                 const privateBadge = (category === 'ips' && privateIPsSet.has(rawKey))
                     ? ` <span class="ip-private-badge">${escapeHtml(t('privateIpBadge'))}</span>` : '';
+                const attackMatrix = category === 'attackTechniques' ? getAttackMatrix(rawKey) : null;
+                const attackBadge = attackMatrix
+                    ? ` <span class="attack-matrix-badge ${attackMatrix}">${escapeHtml(t('attackMatrix' + attackMatrix.charAt(0).toUpperCase() + attackMatrix.slice(1)))}</span>` : '';
                 const itemId = `${category}_${i}`;
                 return `<div class="ioc-item" id="row_${itemId}">
             <input type="checkbox" checked
@@ -2415,7 +2455,7 @@
                    data-category="${category}"
                    data-value="${escapeAttr(item)}"
                    onchange="updateSectionToggle('${category}')">
-            <label onclick="highlightAndFlash('${escapeAttr(item)}', event, this)">${escapeHtml(item)}${countDisplay}${privateBadge}</label>
+            <label onclick="highlightAndFlash('${escapeAttr(item)}', event, this)">${escapeHtml(item)}${countDisplay}${privateBadge}${attackBadge}</label>
             <div class="ioc-actions">
                 <button title="${escapeAttr(t('copyTooltip'))}" onclick="copyIOC('${escapeAttr(item)}', this)"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg></button>
                 <button title="${escapeAttr(t('editTooltip'))}" onclick="editIOC('${itemId}', '${escapeAttr(item)}', '${category}')"><svg viewBox="0 0 16 16"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>
@@ -2479,6 +2519,16 @@
 
         // ─── Helpers ─────────────────────────────────────────────────────────
         function ipToNumber(ip) { return ip.split('.').reduce((acc, octet) => acc * 256 + parseInt(octet), 0); }
+
+        function getAttackMatrix(id) {
+            const m = id.toUpperCase().match(/^TA(\d{4})$/);
+            if (!m) return null; // T#### technique — matrix not determinable
+            const n = parseInt(m[1], 10);
+            if ((n >= 1 && n <= 14) || n === 40 || n === 42 || n === 43) return 'enterprise';
+            if ((n >= 27 && n <= 39) || n === 41) return 'mobile';
+            if (n >= 100 && n <= 111) return 'ics';
+            return null;
+        }
 
         function isPrivateIP(ip) {
             const p = ip.split('.').map(Number);
@@ -2725,7 +2775,11 @@
             const description = document.getElementById('stixDesc').value || '';
             const confidence = parseInt(document.getElementById('stixConfidence').value) || 50;
             const tlpValue = document.getElementById('stixTLP').value;
+            const attackVersion = document.getElementById('stixAttackVersion').value;
             const identityName = document.getElementById('stixIdentity').value || 'Unknown';
+            const attackUrlBase = attackVersion
+                ? `https://attack.mitre.org/versions/${attackVersion}`
+                : 'https://attack.mitre.org';
 
             const now = new Date().toISOString();
             const tlpDef = TLP_DEFS[tlpValue] || TLP_DEFS.amber;
@@ -2762,16 +2816,21 @@
                             }]
                         };
                         break;
-                    case 'attack-pattern':
+                    case 'attack-pattern': {
+                        const isTactic = /^TA\d{4}$/i.test(item.value);
+                        const attackPath = isTactic
+                            ? `tactics/${item.value.toUpperCase()}/`
+                            : `techniques/${item.value.toUpperCase().replace('.', '/')}/`;
                         sco = {
                             type: 'attack-pattern', spec_version: '2.1', id: scoId,
                             created: now, modified: now, name: item.value,
                             external_references: [{
-                                source_name: 'mitre-attack', external_id: item.value,
-                                url: `https://attack.mitre.org/techniques/${item.value.replace('.', '/')}/`
+                                source_name: 'mitre-attack', external_id: item.value.toUpperCase(),
+                                url: `${attackUrlBase}/${attackPath}`
                             }]
                         };
                         break;
+                    }
                     case 'file':
                         if (item.hashType) sco = buildFileHash(scoId, item.value, item.hashType);
                         else if (item.fileName) sco = { type: 'file', spec_version: '2.1', id: scoId, name: item.fileName };
@@ -2831,12 +2890,16 @@
                     });
                 } else if (det.sdo === 'attack-pattern') {
                     refId = 'attack-pattern--' + uuidv4();
+                    const manualIsTactic = /^TA\d{4}$/i.test(manualValue);
+                    const manualAttackPath = manualIsTactic
+                        ? `tactics/${manualValue.toUpperCase()}/`
+                        : `techniques/${manualValue.toUpperCase().replace('.', '/')}/`;
                     objects.push({
                         type: 'attack-pattern', spec_version: '2.1', id: refId,
                         created: now, modified: now, name: manualValue,
                         external_references: [{
-                            source_name: 'mitre-attack', external_id: manualValue,
-                            url: `https://attack.mitre.org/techniques/${manualValue.replace('.', '/')}/`
+                            source_name: 'mitre-attack', external_id: manualValue.toUpperCase(),
+                            url: `${attackUrlBase}/${manualAttackPath}`
                         }],
                         created_by_ref: identityId,
                         object_marking_refs: [tlpMarkingId]
