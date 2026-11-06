@@ -1120,7 +1120,7 @@
 
     <!-- Top bar: title + controls -->
     <div class="top-bar">
-        <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;">
             <h1 data-i18n="title" style="margin-bottom:0;">YOINK! <sup style="font-size:10px;font-weight:normal;color:var(--text-secondary);vertical-align:super;">v1.3</sup></h1>
             <span data-i18n="subtitle" style="font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;margin-top:-2px;">Your Observables Instantly Nabbed &amp; Kategorized</span>
         </div>
@@ -1410,10 +1410,10 @@
 
         function updateFavicon() {
             const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            const shieldFill = isLight ? '%23f5f6f8' : '%231e1e1e';
-            const accentColor = isLight ? '%231a73e8' : '%234da6ff';
-            const gradStart = isLight ? '%231a73e8' : '%234da6ff';
-            const gradEnd = isLight ? '%231558b0' : '%233385cc';
+            const shieldFill = isLight ? '%23f0fafb' : '%230d1117';
+            const accentColor = isLight ? '%230097a7' : '%2300c8d4';
+            const gradStart = isLight ? '%230097a7' : '%2300c8d4';
+            const gradEnd = isLight ? '%23006978' : '%230097a7';
             const favicon = document.querySelector('link[rel="icon"]');
             if (favicon) {
                 favicon.href = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='${gradStart}'/%3E%3Cstop offset='100%25' stop-color='${gradEnd}'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M16 2L4 7v8c0 7.7 5.1 14.9 12 17 6.9-2.1 12-9.3 12-17V7L16 2z' fill='${shieldFill}' stroke='url(%23g)' stroke-width='1.5'/%3E%3Ccircle cx='14' cy='14' r='6' fill='none' stroke='${accentColor}' stroke-width='2'/%3E%3Cline x1='18.5' y1='18.5' x2='24' y2='24' stroke='${accentColor}' stroke-width='2.5' stroke-linecap='round'/%3E%3Ctext x='14' y='17' text-anchor='middle' font-size='7' font-weight='bold' fill='${accentColor}' font-family='Arial'%3EY!%3C/text%3E%3C/svg%3E`;
@@ -1431,7 +1431,7 @@
                 extractBtn: 'YOINK!',
                 csvBtn: 'Download CSV',
                 jsonBtn: 'Download JSON',
-                stixBtn: 'Download STIX 2.1',
+                stixBtn: 'Create STIX 2.1',
                 siemBtn: 'SIEM Queries',
                 helpBtn: 'Documentatie',
                 defangLabel: 'Defang resultaten',
@@ -1479,6 +1479,7 @@
                 siemSentinel: 'Microsoft Sentinel',
                 siemSplunk: 'Splunk',
                 siemElastic: 'Elastic Security (ELK)',
+                siemWazuh: 'Wazuh (OpenSearch)',
                 siemCopyBtn: 'Kopieer',
                 siemNoIOCs: 'Geen IOCs geselecteerd.',
                 copyTooltip: 'Kopieer',
@@ -1497,7 +1498,7 @@
                 extractBtn: 'YOINK!',
                 csvBtn: 'Download CSV',
                 jsonBtn: 'Download JSON',
-                stixBtn: 'Download STIX 2.1',
+                stixBtn: 'Create STIX 2.1',
                 siemBtn: 'SIEM Queries',
                 helpBtn: 'Documentation',
                 defangLabel: 'Defang results',
@@ -1545,6 +1546,7 @@
                 siemSentinel: 'Microsoft Sentinel',
                 siemSplunk: 'Splunk',
                 siemElastic: 'Elastic Security (ELK)',
+                siemWazuh: 'Wazuh (OpenSearch)',
                 siemCopyBtn: 'Copy',
                 siemNoIOCs: 'No IOCs selected.',
                 copyTooltip: 'Copy',
@@ -2505,6 +2507,12 @@
         function defangEmail(email) { return email.replace(/\./g, '[.]'); }
 
         // ─── CSV Export (selected only) ──────────────────────────────────────
+        function exportTimestamp() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+        }
+
         function downloadCSV() {
             const data = getSelectedIOCs();
             let csv = "Type,Value\n";
@@ -2521,7 +2529,7 @@
             data.sha512.forEach(v => csv += `SHA-512,"${csvEscape(v)}"\n`);
             data.cves.forEach(v => csv += `CVE,"${csvEscape(v)}"\n`);
             data.attackTechniques.forEach(v => csv += `ATT&CK,"${csvEscape(v)}"\n`);
-            downloadFile(csv, 'extracted.csv', 'text/csv');
+            downloadFile(csv, `yoink_${exportTimestamp()}.csv`, 'text/csv');
         }
 
         function csvEscape(str) { return str.replace(/"/g, '""'); }
@@ -2529,7 +2537,7 @@
         // ─── JSON Export (selected only) ─────────────────────────────────────
         function downloadJSON() {
             const data = getSelectedIOCs();
-            downloadFile(JSON.stringify(data, null, 2), 'extracted.json', 'application/json');
+            downloadFile(JSON.stringify(data, null, 2), `yoink_${exportTimestamp()}.json`, 'application/json');
         }
 
         // ─── File download helper ────────────────────────────────────────────
@@ -2555,11 +2563,6 @@
 
         // ─── STIX 2.1 Modal ─────────────────────────────────────────────────
         function openStixModal() {
-            // Show WIP warning first
-            if (!confirm(t('stixWIPWarning'))) {
-                return;
-            }
-
             const data = getSelectedIOCs();
             const allItems = [];
             data.ips.forEach(v => allItems.push({ cat: 'ip', value: v, stixType: 'ipv4-addr' }));
@@ -2917,7 +2920,7 @@
             items.forEach(i => { delete i._indicatorId; delete i._sdoId; });
 
             const bundle = { type: 'bundle', id: 'bundle--' + uuidv4(), objects: objects };
-            downloadFile(JSON.stringify(bundle, null, 2), 'stix_bundle.json', 'application/json');
+            downloadFile(JSON.stringify(bundle, null, 2), `yoink_stix_${exportTimestamp()}.json`, 'application/json');
             closeStixModal();
         }
 
@@ -3126,6 +3129,54 @@ SecurityAlert
 
             html += `</div>`;
 
+            // Wazuh (OpenSearch / Lucene)
+            html += `<div class="siem-query-section">
+                <h3>${escapeHtml(t('siemWazuh'))}</h3>`;
+
+            if (allIPs.length > 0) {
+                const ipQuery = allIPs.map(ip => `"${ip}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">agent.ip:(${ipQuery}) OR data.srcip:(${ipQuery}) OR data.dstip:(${ipQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allDomains.length > 0) {
+                const domainQuery = allDomains.map(d => `"${d}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">data.dns.question.name:(${domainQuery}) OR data.url.domain:(${domainQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allURLs.length > 0) {
+                const urlQuery = allURLs.map(u => `"${u}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">data.url.full:(${urlQuery}) OR data.http.request.url:(${urlQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allHashes.length > 0) {
+                const hashQuery = allHashes.map(h => `"${h.toLowerCase()}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">data.win.eventdata.hashes:(*${allHashes[0].toLowerCase()}*${allHashes.length > 1 ? '* OR data.win.eventdata.hashes:*' + allHashes.slice(1).map(h => h.toLowerCase()).join('* OR data.win.eventdata.hashes:*') : ''}*) OR syscheck.sha256_after:(${allHashes.map(h => `"${h.toLowerCase()}"`).join(' OR ')})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allIPv6.length > 0) {
+                const ipv6Query = allIPv6.map(ip => `"${ip}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">data.srcip:(${ipv6Query}) OR data.dstip:(${ipv6Query})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allCVEs.length > 0) {
+                const cveQuery = allCVEs.map(c => `"${c}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">rule.cve:(${cveQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            if (allAttack.length > 0) {
+                const attackQuery = allAttack.map(a => `"${a}"`).join(' OR ');
+                html += `<div style="position:relative;"><div class="siem-query-box">rule.mitre.technique:(${attackQuery}) OR rule.mitre.id:(${attackQuery})</div>
+<button class="siem-copy-btn" onclick="copySiemQuery(this)">${escapeHtml(t('siemCopyBtn'))}</button></div>`;
+            }
+
+            html += `</div>`;
+
             content.innerHTML = html;
             document.getElementById('siemModal').style.display = 'block';
         }
@@ -3160,7 +3211,7 @@ SecurityAlert
 
             c.innerHTML = `
         <button class="modal-close" onclick="closeHelpModal()">&times;</button>
-        <h2>${isNL ? 'YOINK! Documentatie' : 'YOINK! Documentation'}</h2>
+        <h2>${isNL ? 'YOINK! Documentatie' : 'YOINK! Documentation'} <span style="font-size:12px;font-weight:normal;color:var(--text-muted);vertical-align:middle;">v1.3</span></h2>
 
         <div class="doc-section">
             <h3>${isNL ? 'Overzicht' : 'Overview'}</h3>
@@ -3291,6 +3342,10 @@ SecurityAlert
                     ? '— Structured Threat Information Expression bundel. Bevat Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs met STIX-patronen, optionele Relationship SROs, een Report SDO, en TLP-markeringen. U kunt metadata invullen, relaties defini\u00EBren, en handmatig tekst invoeren als bron of doel van relaties in het STIX-exportvenster.'
                     : '— Structured Threat Information Expression bundle. Contains Identity SDO, SCOs (ipv4-addr, url, domain-name, email-addr, file), Indicator SDOs with STIX patterns, optional Relationship SROs, a Report SDO, and TLP markings. You can fill in metadata, define relationships, and manually enter text as source or target of relationships in the STIX export window.'
                 }</p>
+            <p><strong>SIEM Queries</strong> ${isNL
+                    ? '— Genereert kant-en-klare zoekqueries voor Microsoft Sentinel (KQL), Splunk (SPL), Elastic Security (Lucene/ECS) en Wazuh (OpenSearch/Lucene) op basis van de geselecteerde IOCs. Klik op de kopieerknop naast elke query om deze naar het klembord te kopiëren.'
+                    : '— Generates ready-to-use search queries for Microsoft Sentinel (KQL), Splunk (SPL), Elastic Security (Lucene/ECS) and Wazuh (OpenSearch/Lucene) based on selected IOCs. Click the copy button next to each query to copy it to the clipboard.'
+                }</p>
         </div>
 
         <div class="doc-section">
@@ -3340,9 +3395,21 @@ SecurityAlert
         <div class="doc-section">
             <h3>${isNL ? 'Thema en taal' : 'Theme and language'}</h3>
             <p>${isNL
-                    ? 'Gebruik de schakelaar rechtsboven om te wisselen tussen donker en licht thema. Gebruik de NL/EN knoppen om te schakelen tussen Nederlands en Engels. Beide voorkeuren worden onthouden.'
-                    : 'Use the toggle in the top-right corner to switch between dark and light theme. Use the NL/EN buttons to switch between Dutch and English. Both preferences are remembered.'
+                    ? 'Gebruik de schakelaar rechtsboven om te wisselen tussen donker en licht thema. Het thema volgt automatisch uw systeemvoorkeur als u nog geen keuze heeft gemaakt. Gebruik de NL/EN knoppen om te schakelen tussen Nederlands en Engels. Beide voorkeuren worden onthouden.'
+                    : 'Use the toggle in the top-right corner to switch between dark and light theme. The theme follows your system preference automatically if you have not made a choice. Use the NL/EN buttons to switch between Dutch and English. Both preferences are remembered.'
                 }</p>
+        </div>
+
+        <div class="doc-section">
+            <h3>${isNL ? 'Nieuw in v1.3' : 'New in v1.3'}</h3>
+            <ul>
+                <li>${isNL ? '<strong>Automatisch thema</strong> — volgt <code>prefers-color-scheme</code> als er geen voorkeur is opgeslagen.' : '<strong>Auto theme</strong> — follows <code>prefers-color-scheme</code> when no preference is saved.'}</li>
+                <li>${isNL ? '<strong>Toetsenbordsnelkoppelingen</strong> — <kbd>Ctrl+Enter</kbd> (of <kbd>⌘+Enter</kbd>) om te extraheren of terug te keren naar bewerken; <kbd>Esc</kbd> om modals en het bronpaneel te sluiten.' : '<strong>Keyboard shortcuts</strong> — <kbd>Ctrl+Enter</kbd> (or <kbd>⌘+Enter</kbd>) to extract or return to edit; <kbd>Esc</kbd> to close modals and the source panel.'}</li>
+                <li>${isNL ? '<strong>Drag &amp; drop bestandsinvoer</strong> — sleep een tekstbestand rechtstreeks op het invoerveld om de inhoud te laden.' : '<strong>Drag &amp; drop file input</strong> — drag a text file directly onto the input area to load its contents.'}</li>
+                <li>${isNL ? '<strong>IOC-filter</strong> — gebruik het filterveld in de selectiebalk om IOCs realtime te filteren op tekst.' : '<strong>IOC filter</strong> — use the filter field in the selection bar to filter IOCs by text in real time.'}</li>
+                <li>${isNL ? '<strong>Privé IP-badge</strong> — RFC 1918 en andere niet-routeerbare IPv4-adressen (127.x, 169.254.x, 100.64–127.x) worden gemarkeerd met een <em>private</em>-label.' : '<strong>Private IP badge</strong> — RFC 1918 and other non-routable IPv4 addresses (127.x, 169.254.x, 100.64–127.x) are labelled <em>private</em>.'}</li>
+                <li>${isNL ? '<strong>Wazuh SIEM-queries</strong> — OpenSearch/Lucene-queries voor Wazuh toegevoegd aan het SIEM-queryvenster.' : '<strong>Wazuh SIEM queries</strong> — OpenSearch/Lucene queries for Wazuh added to the SIEM query window.'}</li>
+            </ul>
         </div>
     `;
         }
