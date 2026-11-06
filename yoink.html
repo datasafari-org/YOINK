@@ -2553,8 +2553,15 @@
 
         function defangIP(ip) { return ip.replace(/\./g, '[.]'); }
         function defangURL(url) {
-            return url.replace(/^https:\/\//i, 'hxxps://').replace(/^http:\/\//i, 'hxxp://')
-                .replace(/^ftps:\/\//i, 'fxps://').replace(/^ftp:\/\//i, 'fxp://');
+            return url
+                .replace(/^https:\/\//i, 'hxxps://')
+                .replace(/^http:\/\//i, 'hxxp://')
+                .replace(/^ftps:\/\//i, 'fxps://')
+                .replace(/^ftp:\/\//i, 'fxp://')
+                // Replace dots in the host/authority portion only (before first /, ?, # or end)
+                .replace(/^(hxxps?:\/\/|fxps?:\/\/)([^/?#\s]+)/, (_, scheme, host) =>
+                    scheme + host.replace(/\./g, '[.]')
+                );
         }
         function defangDomain(domain) { return domain.replace(/\./g, '[.]'); }
         function defangEmail(email) { return email.replace(/\./g, '[.]'); }
@@ -3337,6 +3344,7 @@ SecurityAlert
                 <tr><td>URL</td><td>http://</td><td>hxxp://</td><td>${isNL ? 'Protocol vervangen' : 'Protocol replaced'}</td></tr>
                 <tr><td>URL</td><td>ftps://</td><td>fxps://</td><td>${isNL ? 'FTP-protocol vervangen' : 'FTP protocol replaced'}</td></tr>
                 <tr><td>URL</td><td>ftp://</td><td>fxp://</td><td>${isNL ? 'FTP-protocol vervangen' : 'FTP protocol replaced'}</td></tr>
+                <tr><td>URL</td><td>evil.example.com</td><td>evil[.]example[.]com</td><td>${isNL ? 'Punten in hostnaam tussen vierkante haken (pad ongewijzigd)' : 'Dots in hostname wrapped in brackets (path unchanged)'}</td></tr>
                 <tr><td>IP/Domein</td><td>.</td><td>[.]</td><td>${isNL ? 'Punt tussen vierkante haken om DNS-resolutie te voorkomen' : 'Dot wrapped in brackets to prevent DNS resolution'}</td></tr>
                 <tr><td>E-mail</td><td>.</td><td>[.]</td><td>${isNL ? 'Punt in e-mailadres tussen vierkante haken' : 'Dot in email wrapped in brackets'}</td></tr>
             </table>
